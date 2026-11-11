@@ -46,7 +46,7 @@ export function PlanScreen() {
   }));
 
   const statusIcon = (w: Workout) => {
-    if (w.status === "completed") return <Icon name="check" size={20} color={theme.field} />;
+    if (w.status === "completed") return <Icon name="check" size={20} color={theme.primary} />;
     if (w.status === "skipped") return <Icon name="skipped" size={20} color={theme.textMuted} />;
     if (w.date < today) return <Icon name="missed" size={20} color={theme.textMuted} />;
     return null;
@@ -92,7 +92,7 @@ export function PlanScreen() {
       ListHeaderComponent={header}
       renderSectionHeader={({ section }) => (
         <View style={{ paddingTop: space.l, paddingBottom: space.s, paddingHorizontal: 4, gap: 2 }}>
-          <Txt variant="heading" accessibilityRole="header" color={section.week.index === currentWeek.index ? theme.track : undefined}>
+          <Txt variant="heading" accessibilityRole="header" color={section.week.index === currentWeek.index ? theme.accentText : undefined}>
             {t.common.week(section.week.index + 1)}
           </Txt>
           <Txt variant="caption" muted>
@@ -131,7 +131,7 @@ export function PlanScreen() {
                 leading={<Icon name="strength" size={14} color={theme.textMuted} />}
                 trailing={
                   item.slot.status === "completed" ? (
-                    <Icon name="check" size={20} color={theme.field} />
+                    <Icon name="check" size={20} color={theme.primary} />
                   ) : item.date < today ? (
                     <Icon name="missed" size={20} color={theme.textMuted} />
                   ) : null
@@ -163,7 +163,7 @@ function PhaseBar({ weeks, current }: { weeks: PlanWeek[]; current: number }) {
             flex: 1,
             height: Math.max(6, (w.targetDistance / max) * 40),
             borderRadius: radius.lane,
-            backgroundColor: w.index === current ? theme.track : w.index < current ? theme.field : theme.surfaceAlt,
+            backgroundColor: w.index === current ? theme.accent : w.index < current ? theme.primary : theme.surfaceAlt,
           }}
         />
       ))}

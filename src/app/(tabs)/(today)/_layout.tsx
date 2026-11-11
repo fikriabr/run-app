@@ -7,7 +7,7 @@ export default function TodayStack() {
   const options = useStackOptions(true);
   return (
     <Stack screenOptions={options}>
-      <Stack.Screen name="index" options={{ title: t.tabs.today }} />
+      <Stack.Screen name="index" options={{ title: t.tabs.today, headerShown: false }} />
     </Stack>
   );
 }

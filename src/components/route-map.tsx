@@ -42,8 +42,8 @@ export function RouteMap({ points, height, accessibilityLabel, follow }: RouteVi
         toolbarEnabled={false}
         initialRegion={last ? { ...last, latitudeDelta: 0.01, longitudeDelta: 0.01 } : undefined}
       >
-        {coords.length > 1 ? <Polyline coordinates={coords} strokeColor={theme.track} strokeWidth={5} /> : null}
-        {coords.length > 0 && !follow ? <Marker coordinate={coords[0]} pinColor={theme.field} /> : null}
+        {coords.length > 1 ? <Polyline coordinates={coords} strokeColor={theme.accent} strokeWidth={5} /> : null}
+        {coords.length > 0 && !follow ? <Marker coordinate={coords[0]} pinColor={theme.primary} /> : null}
       </MapView>
     </View>
   );

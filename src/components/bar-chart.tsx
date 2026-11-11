@@ -36,7 +36,7 @@ export function BarChart({ bars, height = 120, accessibilityLabel, format }: { b
               width={barW}
               height={h}
               rx={4}
-              fill={b.highlight ? theme.track : theme.field}
+              fill={b.highlight ? theme.accent : theme.primary}
             />
           );
         })}

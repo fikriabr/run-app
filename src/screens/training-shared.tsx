@@ -10,7 +10,7 @@ import { radius, useTheme } from "@/theme";
 export function CategoryMark({ category, size = 12 }: { category: ExerciseCategory; size?: number }) {
   const theme = useTheme();
   const hard = category === "strength" || category === "plyometric";
-  return <View style={{ width: size, height: size, borderRadius: radius.lane, backgroundColor: hard ? theme.track : theme.field }} />;
+  return <View style={{ width: size, height: size, borderRadius: radius.lane, backgroundColor: hard ? theme.accent : theme.primary }} />;
 }
 
 export function useTargetText() {

@@ -1,29 +1,36 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import { setStatusBarStyle } from "expo-status-bar";
+import { useCallback } from "react";
 import { Pressable, ScrollView, View, type ViewStyle } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Svg, { Polygon } from "react-native-svg";
 import { Banner } from "@/components/banner";
 import { Button } from "@/components/button";
-import { Icon } from "@/components/icon";
+import { Icon, type IconName } from "@/components/icon";
 import { Row, Section, SectionTitle } from "@/components/section";
-import { Num, Txt } from "@/components/text";
+import { Txt } from "@/components/text";
+import { type DayItem, WeekRings } from "@/components/week-rings";
+import { EXERCISE_MAP } from "@/data/exercises";
 import { useFormat } from "@/hooks/use-format";
 import { useToday } from "@/hooks/use-today";
 import { useLocalized, useT } from "@/i18n";
-import { EXERCISE_MAP } from "@/data/exercises";
-import { routineDuration } from "@/lib/training";
-import { findRoutine, useTrainingStore } from "@/store/training-store";
-import { useStartRoutine } from "./training-shared";
 import { missedWorkouts } from "@/lib/adapt";
 import { addDays, fromDateKey, mondayOf } from "@/lib/dates";
-import type { Workout } from "@/lib/types";
-import { workoutDistance } from "@/lib/workouts";
+import { routineDuration } from "@/lib/training";
+import { isQuality, workoutDistance } from "@/lib/workouts";
 import { useAppStore } from "@/store/app-store";
-import { effortColor, radius, space, useTheme, screenContent } from "@/theme";
+import { findRoutine, useTrainingStore } from "@/store/training-store";
+import { fonts, radius, screenContent, space, useResolvedScheme, useTheme } from "@/theme";
+import { useStartRoutine } from "./training-shared";
 import { EffortMark, WorkoutCard } from "./workout-card";
 
 export function TodayScreen() {
   const t = useT();
   const f = useFormat();
+  const l = useLocalized();
   const theme = useTheme();
+  const scheme = useResolvedScheme();
+  const insets = useSafeAreaInsets();
   const today = useToday();
   const plan = useAppStore((s) => s.plan);
   const vdot = useAppStore((s) => s.vdot) ?? 40;
@@ -31,9 +38,16 @@ export function TodayScreen() {
   const hiddenUntil = useAppStore((s) => s.missedPromptHiddenUntil);
   const hideMissedPrompt = useAppStore((s) => s.hideMissedPrompt);
   const setVdot = useAppStore((s) => s.setVdot);
-  const l = useLocalized();
   const customRoutines = useTrainingStore((s) => s.customRoutines);
   const startRoutine = useStartRoutine();
+
+  // The navy hero needs light status-bar content while this tab is showing.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarStyle("light");
+      return () => setStatusBarStyle(scheme === "dark" ? "light" : "dark");
+    }, [scheme]),
+  );
 
   if (!plan) return null;
   const goal = plan.input.goal;
@@ -51,191 +65,280 @@ export function TodayScreen() {
   const weekStart = mondayOf(today);
   const weekDays = [0, 1, 2, 3, 4, 5, 6].map((d) => addDays(weekStart, d));
   const weekWorkouts = plan.workouts.filter((w) => w.date >= weekStart && w.date <= weekDays[6]);
+  const weekStrength = (plan.strength ?? []).filter((x) => x.date >= weekStart && x.date <= weekDays[6]);
   const plannedDistance = weekWorkouts.filter((w) => w.status !== "skipped").reduce((sum, w) => sum + workoutDistance(w, vdot, goal), 0);
+  const weekStartMs = fromDateKey(weekStart).getTime();
   const doneDistance = activities
-    .filter((a) => {
-      const key = fromDateKey(weekStart).getTime();
-      return a.startedAt >= key && a.startedAt < key + 7 * 86_400_000;
-    })
+    .filter((a) => a.startedAt >= weekStartMs && a.startedAt < weekStartMs + 7 * 86_400_000)
     .reduce((sum, a) => sum + a.distance, 0);
+  const currentWeek = plan.weeks.find((w) => today >= w.start && today <= addDays(w.start, 6));
+
+  const dayItems: Record<string, DayItem[]> = {};
+  for (const w of weekWorkouts) {
+    if (w.status === "skipped") continue;
+    (dayItems[w.date] ??= []).push({ kind: isQuality(w.type) ? "hard" : "easy", done: w.status === "completed" });
+  }
+  for (const s of weekStrength) {
+    if (s.status === "skipped") continue;
+    (dayItems[s.date] ??= []).push({ kind: "strength", done: s.status === "completed" });
+  }
+
+  const openDay = (day: string) => {
+    const run = weekWorkouts.find((w) => w.date === day);
+    if (run) router.push({ pathname: "/workouts/[id]", params: { id: run.id } });
+    else router.push("/plan");
+  };
+
+  const fabBottom = process.env.EXPO_OS === "ios" ? insets.bottom + 64 : 20;
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ ...screenContent, gap: space.xl }}>
-      {showMissed ? (
-        <Banner icon="missed" tone="attention" title={t.today.missedTitle(missed.length)} body={t.today.missedBody}>
-          <View style={{ flexDirection: "row", gap: space.s, flexWrap: "wrap" }}>
-            <Button
-              label={t.today.missedEase}
-              onPress={() => {
-                setVdot(vdot - 1, "missedWorkouts");
-                hideMissedPrompt(addDays(today, 14));
-              }}
-              style={{ flexGrow: 1 }}
-            />
-            <Button label={t.today.missedKeep} kind="secondary" onPress={() => hideMissedPrompt(addDays(today, 7))} style={{ flexGrow: 1 }} />
-          </View>
-        </Banner>
-      ) : null}
-
-      {planDone ? (
-        <Banner icon="check" tone="good" title={t.today.planDone} body={t.today.planDoneHint}>
-          <Button label={t.today.newPlan} onPress={() => router.push("/plan-setup")} />
-        </Banner>
-      ) : focus ? (
-        <WorkoutCard workout={focus} vdot={vdot} goal={goal} showStart />
-      ) : (
-        <View style={{ backgroundColor: theme.surface, borderRadius: radius.section, borderCurve: "continuous", padding: 20, gap: space.m }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
-            <Icon name="rest" size={22} color={theme.field} />
-            <Txt variant="title">{t.today.rest}</Txt>
-          </View>
-          <Txt muted>{notStarted ? t.today.notStarted(f.dayLong(plan.workouts[0].date)) : t.today.restHint}</Txt>
-          {upcoming[0] ? (
-            <Row
-              title={`${t.today.nextUp}: ${t.workout[upcoming[0].type]}`}
-              subtitle={`${f.dayLong(upcoming[0].date)} · ${f.distanceWithUnit(workoutDistance(upcoming[0], vdot, goal))}`}
-              leading={<EffortMark type={upcoming[0].type} />}
-              onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: upcoming[0].id } })}
-            />
-          ) : null}
-        </View>
-      )}
-
-      {strengthSlot && strengthRoutine ? (
-        <View style={{ backgroundColor: theme.surface, borderRadius: radius.section, borderCurve: "continuous", padding: 20, gap: space.m }}>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
-            <Icon name="strength" size={18} color={theme.track} />
-            <Txt variant="label" color={theme.track}>
-              {strengthSlot.status === "completed" ? t.today.completed : t.training.planned}
-            </Txt>
-          </View>
-          <Txt variant="title">{l(strengthRoutine.name)}</Txt>
-          <Txt muted>
-            {t.training.exercisesCount(strengthRoutine.items.length)} · {t.training.estimate(Math.round(routineDuration(strengthRoutine, EXERCISE_MAP) / 60))}
-          </Txt>
-          {strengthSlot.status === "completed" && strengthSlot.sessionId ? (
-            <Button
-              label={t.training.summary}
-              kind="secondary"
-              onPress={() => router.push({ pathname: "/sessions/[id]", params: { id: strengthSlot.sessionId! } })}
-            />
-          ) : (
-            <Button
-              label={t.training.startRoutine}
-              kind={focus && focus.status === "planned" ? "secondary" : "primary"}
-              icon="strength"
-              onPress={() => void startRoutine(strengthRoutine.id, strengthSlot.id)}
-            />
-          )}
-        </View>
-      ) : null}
-
-      <Button label={t.today.freeRun} kind="secondary" icon="run" onPress={() => router.push("/run")} />
-
-      {!planDone ? (
-        <View style={{ gap: space.m }}>
-          <SectionTitle
-            action={
-              <Txt variant="caption" muted selectable>
-                {t.today.weekProgress(f.distance(doneDistance, 1), f.distance(plannedDistance, 0), f.unit)}
+    <View style={{ flex: 1, backgroundColor: theme.bg }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+        <View style={{ backgroundColor: theme.navy, paddingTop: insets.top + 8, paddingBottom: 72 }}>
+          <View style={{ ...screenContent, paddingBottom: 0, gap: space.l }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              <HeroIconButton icon="settings" label={t.you.settings} onPress={() => router.push("/settings")} />
+              <Txt accessibilityRole="header" style={{ fontFamily: fonts.heavy, fontSize: 26, letterSpacing: 1.5, color: theme.onNavy }}>
+                LANGKAH
               </Txt>
-            }
-          >
-            {t.today.thisWeek}
-          </SectionTitle>
-          <WeekStrip days={weekDays} workouts={weekWorkouts} today={today} />
+              <Pressable
+                onPress={() => router.push("/run")}
+                accessibilityRole="button"
+                accessibilityLabel={t.today.freeRun}
+                style={({ pressed }) =>
+                  ({ minHeight: 40, paddingHorizontal: 16, borderRadius: radius.pill, backgroundColor: theme.accent, justifyContent: "center", opacity: pressed ? 0.85 : 1, cursor: "pointer" }) as ViewStyle
+                }
+              >
+                <Txt variant="label" color={theme.onAccent} style={{ fontSize: 14 }}>
+                  {t.today.freeRun}
+                </Txt>
+              </Pressable>
+            </View>
+            <View style={{ gap: 2 }}>
+              <Txt variant="caption" color={theme.navyMuted}>
+                {f.dayLong(today)}
+              </Txt>
+              <Txt variant="display" color={theme.onNavy}>
+                {currentWeek ? `${t.common.weekOf(currentWeek.index + 1, plan.weeks.length)}` : t.goalPlan(t.goal[goal])}
+              </Txt>
+              {currentWeek ? (
+                <Txt variant="body" color={theme.navyMuted}>
+                  {t.goalPlan(t.goal[goal])} · {t.phase[currentWeek.phase]}
+                </Txt>
+              ) : null}
+            </View>
+          </View>
         </View>
-      ) : null}
 
-      {upcoming.length > 0 && !planDone ? (
-        <View style={{ gap: space.m }}>
-          <SectionTitle>{t.today.comingUp}</SectionTitle>
-          <Section>
-            {upcoming.slice(focus ? 0 : 1, (focus ? 0 : 1) + 3).map((w) => (
-              <Row
-                key={w.id}
-                title={t.workout[w.type]}
-                subtitle={`${f.day(w.date)} · ${f.distanceWithUnit(workoutDistance(w, vdot, goal))}`}
-                leading={<EffortMark type={w.type} />}
-                onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: w.id } })}
+        <View style={{ marginTop: -56 }}>
+          <Stripes navy={theme.navy} accent={theme.accent} />
+          <View style={{ ...screenContent, paddingTop: 0, gap: space.l }}>
+            <View style={{ backgroundColor: theme.surface, borderRadius: radius.card, borderCurve: "continuous", overflow: "hidden" }}>
+              <View style={{ padding: 16, paddingBottom: 8, gap: space.m }}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4 }}>
+                  <Txt variant="title" accessibilityRole="header">
+                    {t.today.thisWeek}
+                  </Txt>
+                  <HeroIconButton icon="plan" label={t.tabs.plan} onPress={() => router.push("/plan")} tint={theme.primary} />
+                </View>
+                <WeekRings
+                  days={weekDays}
+                  today={today}
+                  items={dayItems}
+                  weekdayLetter={(d) => f.weekdayShort(d).slice(0, 1).toUpperCase()}
+                  dayLabel={(d, items) =>
+                    `${f.dayLong(d)}: ${items.length === 0 ? t.today.rest : `${items.filter((i) => i.done).length}/${items.length} ${t.today.completed.toLowerCase()}`}`
+                  }
+                  onPressDay={openDay}
+                />
+              </View>
+              <SummaryRow
+                icon="run"
+                tint={theme.primary}
+                soft={theme.primarySoft}
+                label={t.today.weekDistance}
+                value={`${f.distance(doneDistance, 1)} / ${f.distance(plannedDistance, 0)} ${f.unit}`}
               />
-            ))}
-          </Section>
+              {weekStrength.length > 0 ? (
+                <SummaryRow
+                  icon="strength"
+                  tint={theme.text}
+                  soft={theme.yellowSoft}
+                  label={t.today.weekStrength}
+                  value={`${weekStrength.filter((s) => s.status === "completed").length} / ${weekStrength.length}`}
+                />
+              ) : null}
+            </View>
+
+            {showMissed ? (
+              <Banner icon="missed" tone="attention" title={t.today.missedTitle(missed.length)} body={t.today.missedBody}>
+                <View style={{ flexDirection: "row", gap: space.s, flexWrap: "wrap" }}>
+                  <Button
+                    label={t.today.missedEase}
+                    onPress={() => {
+                      setVdot(vdot - 1, "missedWorkouts");
+                      hideMissedPrompt(addDays(today, 14));
+                    }}
+                    style={{ flexGrow: 1 }}
+                  />
+                  <Button label={t.today.missedKeep} kind="secondary" onPress={() => hideMissedPrompt(addDays(today, 7))} style={{ flexGrow: 1 }} />
+                </View>
+              </Banner>
+            ) : null}
+
+            {planDone ? (
+              <Banner icon="check" tone="good" title={t.today.planDone} body={t.today.planDoneHint}>
+                <Button label={t.today.newPlan} onPress={() => router.push("/plan-setup")} />
+              </Banner>
+            ) : focus ? (
+              <WorkoutCard workout={focus} vdot={vdot} goal={goal} showStart />
+            ) : (
+              <View style={{ backgroundColor: theme.surface, borderRadius: radius.card, borderCurve: "continuous", padding: 20, gap: space.m }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
+                  <Icon name="rest" size={22} color={theme.primary} />
+                  <Txt variant="title">{t.today.rest}</Txt>
+                </View>
+                <Txt muted>{notStarted ? t.today.notStarted(f.dayLong(plan.workouts[0].date)) : t.today.restHint}</Txt>
+                {upcoming[0] ? (
+                  <Button
+                    label={`${t.today.nextUp}: ${t.workout[upcoming[0].type]}`}
+                    kind="secondary"
+                    style={{ alignSelf: "flex-start" }}
+                    onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: upcoming[0].id } })}
+                  />
+                ) : null}
+              </View>
+            )}
+
+            {strengthSlot && strengthRoutine ? (
+              <View style={{ backgroundColor: theme.surface, borderRadius: radius.card, borderCurve: "continuous", padding: 20, gap: space.m }}>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
+                  <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: theme.yellowSoft, alignItems: "center", justifyContent: "center" }}>
+                    <Icon name="strength" size={16} color={theme.text} />
+                  </View>
+                  <Txt variant="label" muted>
+                    {strengthSlot.status === "completed" ? t.today.completed : t.training.planned}
+                  </Txt>
+                </View>
+                <Txt variant="title">{l(strengthRoutine.name)}</Txt>
+                <Txt muted>
+                  {t.training.exercisesCount(strengthRoutine.items.length)} · {t.training.estimate(Math.round(routineDuration(strengthRoutine, EXERCISE_MAP) / 60))}
+                </Txt>
+                {strengthSlot.status === "completed" && strengthSlot.sessionId ? (
+                  <Button label={t.training.summary} kind="secondary" onPress={() => router.push({ pathname: "/sessions/[id]", params: { id: strengthSlot.sessionId! } })} />
+                ) : (
+                  <Button
+                    label={t.training.startRoutine}
+                    kind={focus && focus.status === "planned" ? "secondary" : "primary"}
+                    icon="strength"
+                    onPress={() => void startRoutine(strengthRoutine.id, strengthSlot.id)}
+                  />
+                )}
+              </View>
+            ) : null}
+
+            {upcoming.length > 0 && !planDone ? (
+              <View style={{ backgroundColor: theme.surface, borderRadius: radius.card, borderCurve: "continuous", paddingTop: 20, overflow: "hidden" }}>
+                <View style={{ paddingHorizontal: 16 }}>
+                  <SectionTitle action={<Button label={t.today.viewAll} kind="plain" onPress={() => router.push("/plan")} style={{ minHeight: 44, paddingHorizontal: 4 }} />}>
+                    {t.today.comingUp}
+                  </SectionTitle>
+                </View>
+                <Section style={{ borderRadius: 0 }}>
+                  {upcoming.slice(0, 3).map((w) => (
+                    <Row
+                      key={w.id}
+                      title={t.workout[w.type]}
+                      subtitle={`${f.day(w.date)} · ${f.distanceWithUnit(workoutDistance(w, vdot, goal))}`}
+                      leading={<EffortMark type={w.type} />}
+                      onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: w.id } })}
+                    />
+                  ))}
+                </Section>
+              </View>
+            ) : null}
+          </View>
         </View>
-      ) : null}
-    </ScrollView>
+      </ScrollView>
+
+      <Pressable
+        onPress={() => router.push("/quick-start")}
+        accessibilityRole="button"
+        accessibilityLabel={t.quickStart.title}
+        style={({ pressed }) =>
+          ({
+            position: "absolute",
+            right: 20,
+            bottom: fabBottom,
+            width: 64,
+            height: 64,
+            borderRadius: 32,
+            backgroundColor: theme.accent,
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 6px 16px rgba(214, 48, 49, 0.35)",
+            transform: [{ scale: pressed ? 0.95 : 1 }],
+            cursor: "pointer",
+          }) as ViewStyle
+        }
+      >
+        <Icon name="plus" size={30} color={theme.onAccent} />
+      </Pressable>
+    </View>
   );
 }
 
-function WeekStrip({ days, workouts, today }: { days: string[]; workouts: Workout[]; today: string }) {
+function HeroIconButton({ icon, label, onPress, tint }: { icon: IconName; label: string; onPress: () => void; tint?: string }) {
   const theme = useTheme();
-  const t = useT();
-  const f = useFormat();
+  const onHero = tint == null;
   return (
-    <View style={{ flexDirection: "row", gap: 4 }}>
-      {days.map((day) => {
-        const w = workouts.find((x) => x.date === day);
-        const isToday = day === today;
-        const missed = w && w.status === "planned" && day < today;
-        const color = w ? effortColor(theme, w.type) : null;
-        const status = !w
-          ? t.today.rest
-          : w.status === "completed"
-            ? `${t.workout[w.type]}, ${t.today.completed}`
-            : w.status === "skipped"
-              ? `${t.workout[w.type]}, ${t.plan.skipped}`
-              : missed
-                ? `${t.workout[w.type]}, ${t.plan.missed}`
-                : t.workout[w.type];
-        const cell = (
-          <View style={{ alignItems: "center", gap: 6, paddingVertical: 10 }}>
-            <Txt variant="caption" muted={!isToday} color={isToday ? theme.track : undefined}>
-              {f.weekdayShort(day).slice(0, 3)}
-            </Txt>
-            <Num size={22} color={isToday ? theme.track : theme.text}>
-              {fromDateKey(day).getDate()}
-            </Num>
-            <View style={{ height: 20, justifyContent: "center" }}>
-              {!w ? (
-                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: theme.separator }} />
-              ) : w.status === "completed" ? (
-                <Icon name="check" size={18} color={theme.field} />
-              ) : w.status === "skipped" ? (
-                <Icon name="skipped" size={18} color={theme.textMuted} />
-              ) : missed ? (
-                <Icon name="missed" size={18} color={theme.textMuted} />
-              ) : (
-                <View style={{ width: 16, height: 8, borderRadius: radius.lane, backgroundColor: color!.fill }} />
-              )}
-            </View>
-          </View>
-        );
-        const base: ViewStyle = {
-          flex: 1,
-          minWidth: 40,
-          borderRadius: radius.button,
-          borderCurve: "continuous",
-          backgroundColor: isToday ? theme.surface : "transparent",
-        };
-        if (!w) {
-          return (
-            <View key={day} style={base} accessible accessibilityLabel={`${f.dayLong(day)}: ${status}`}>
-              {cell}
-            </View>
-          );
-        }
-        return (
-          <Pressable
-            key={day}
-            accessibilityRole="button"
-            accessibilityLabel={`${f.dayLong(day)}: ${status}`}
-            onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: w.id } })}
-            style={({ pressed }) => [base, { cursor: "pointer", backgroundColor: pressed ? theme.surfaceAlt : base.backgroundColor } as ViewStyle]}
-          >
-            {cell}
-          </Pressable>
-        );
-      })}
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) =>
+        ({
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: onHero ? (pressed ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.1)") : pressed ? theme.primarySoft : "transparent",
+          cursor: "pointer",
+        }) as ViewStyle
+      }
+    >
+      <Icon name={icon} size={22} color={tint ?? theme.onNavy} />
+    </Pressable>
+  );
+}
+
+function SummaryRow({ icon, tint, soft, label, value }: { icon: IconName; tint: string; soft: string; label: string; value: string }) {
+  const theme = useTheme();
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: space.m, paddingHorizontal: 20, paddingVertical: 14, borderTopWidth: 1, borderTopColor: theme.separator }}>
+      <View style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: soft, alignItems: "center", justifyContent: "center" }}>
+        <Icon name={icon} size={18} color={tint} />
+      </View>
+      <Txt variant="heading" style={{ flex: 1 }}>
+        {label}
+      </Txt>
+      <Txt variant="heading" selectable style={{ fontVariant: ["tabular-nums"] }}>
+        {value}
+      </Txt>
+    </View>
+  );
+}
+
+/** The navy band breaking into a red lane line behind the first card: the hero's diagonal edge. */
+function Stripes({ navy, accent }: { navy: string; accent: string }) {
+  return (
+    <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: 420 }} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+      <Svg width="100%" height="100%" viewBox="0 0 400 420" preserveAspectRatio="none">
+        <Polygon points="0,0 400,0 400,200 0,40" fill={navy} />
+        <Polygon points="0,150 0,190 70,260 110,260" fill={accent} />
+        <Polygon points="260,300 330,300 400,360 400,420" fill={navy} />
+      </Svg>
     </View>
   );
 }

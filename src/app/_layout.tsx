@@ -1,5 +1,11 @@
 import "@/services/location";
-import { BarlowCondensed_600SemiBold, BarlowCondensed_700Bold, useFonts } from "@expo-google-fonts/barlow-condensed";
+import {
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_800ExtraBold,
+  useFonts,
+} from "@expo-google-fonts/plus-jakarta-sans";
 import { Stack } from "expo-router";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router/react-navigation";
 import * as SplashScreen from "expo-splash-screen";
@@ -15,7 +21,7 @@ import { useResolvedScheme, useTheme } from "@/theme";
 void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [fontsLoaded, fontError] = useFonts({ BarlowCondensed_600SemiBold, BarlowCondensed_700Bold });
+  const [fontsLoaded, fontError] = useFonts({ PlusJakartaSans_500Medium, PlusJakartaSans_600SemiBold, PlusJakartaSans_700Bold, PlusJakartaSans_800ExtraBold });
   const t = useT();
   const theme = useTheme();
   const scheme = useResolvedScheme();
@@ -39,7 +45,7 @@ export default function RootLayout() {
   const base = scheme === "dark" ? DarkTheme : DefaultTheme;
   const navTheme = {
     ...base,
-    colors: { ...base.colors, background: theme.bg, card: theme.bg, text: theme.text, primary: theme.track, border: theme.separator },
+    colors: { ...base.colors, background: theme.bg, card: theme.bg, text: theme.text, primary: theme.primary, border: theme.separator },
   };
 
   return (
@@ -64,6 +70,10 @@ export default function RootLayout() {
           <Stack.Screen name="routine-edit" options={{ presentation: "modal", title: t.training.builderTitle }} />
           <Stack.Screen name="session" options={{ title: "" }} />
           <Stack.Screen name="sessions/[id]" options={{ title: t.training.summary }} />
+          <Stack.Screen
+            name="quick-start"
+            options={{ presentation: "formSheet", sheetGrabberVisible: true, sheetAllowedDetents: [0.6, 0.9], title: t.quickStart.title }}
+          />
         </Stack.Protected>
         <Stack.Protected guard={!hasPlan}>
           <Stack.Screen name="onboarding" options={{ title: t.onboarding.title, headerLargeTitleEnabled: true }} />

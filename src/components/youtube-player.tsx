@@ -44,8 +44,8 @@ export function YouTubePlayer({ videoId, title, playLabel }: { videoId: string; 
             </View>
           )}
           <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: theme.track, alignItems: "center", justifyContent: "center" }}>
-              <Icon name="play" size={28} color={theme.onTrack} />
+            <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: theme.accent, alignItems: "center", justifyContent: "center" }}>
+              <Icon name="play" size={28} color={theme.onAccent} />
             </View>
           </View>
         </Pressable>

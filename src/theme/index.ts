@@ -6,57 +6,80 @@ import { effortTone } from "@/lib/workouts";
 // Values and their reasons are documented in DESIGN.md.
 export interface Theme {
   scheme: "light" | "dark";
+  /** Hero band on Home and the inverted rest timer. */
+  navy: string;
+  onNavy: string;
+  navyMuted: string;
   bg: string;
   surface: string;
   surfaceAlt: string;
   text: string;
   textMuted: string;
   separator: string;
-  track: string;
-  onTrack: string;
-  trackSoft: string;
-  field: string;
-  onField: string;
-  fieldSoft: string;
+  /** Red fill: the main call to action and hard efforts. */
+  accent: string;
+  onAccent: string;
+  /** Red for text, a shade darker than the fill so small text keeps 4.5:1. */
+  accentText: string;
+  accentSoft: string;
+  /** Blue: links, selection, completed state and steady efforts. */
+  primary: string;
+  onPrimary: string;
+  primarySoft: string;
+  /** Yellow marks strength sessions; used as a fill only, never as text. */
+  yellow: string;
+  yellowSoft: string;
   focus: string;
 }
 
 const light: Theme = {
   scheme: "light",
-  bg: "#F7F4EF",
+  navy: "#0E1238",
+  onNavy: "#FFFFFF",
+  navyMuted: "#A9B0D6",
+  bg: "#F2F4F8",
   surface: "#FFFFFF",
-  surfaceAlt: "#EFEAE2",
-  text: "#1B1A17",
-  textMuted: "#5C574F",
-  separator: "#DDD6CB",
-  track: "#A8361F",
-  onTrack: "#FFFFFF",
-  trackSoft: "#F3DED8",
-  field: "#2B6440",
-  onField: "#FFFFFF",
-  fieldSoft: "#DCEADF",
-  focus: "#1B1A17",
+  surfaceAlt: "#E9ECF3",
+  text: "#12152B",
+  textMuted: "#5E6582",
+  separator: "#E1E5EE",
+  accent: "#D63031",
+  onAccent: "#FFFFFF",
+  accentText: "#C92A2A",
+  accentSoft: "#FDECEC",
+  primary: "#1D4ED8",
+  onPrimary: "#FFFFFF",
+  primarySoft: "#E6EDFC",
+  yellow: "#F5B82E",
+  yellowSoft: "#FFF4D6",
+  focus: "#1D4ED8",
 };
 
 const dark: Theme = {
   scheme: "dark",
-  bg: "#12110F",
-  surface: "#1F1D1A",
-  surfaceAlt: "#2A2724",
-  text: "#F2EFE9",
-  textMuted: "#ABA59B",
-  separator: "#3A3632",
-  track: "#F0785C",
-  onTrack: "#12110F",
-  trackSoft: "#3B231D",
-  field: "#6FC48F",
-  onField: "#12110F",
-  fieldSoft: "#1D3325",
-  focus: "#F2EFE9",
+  navy: "#060818",
+  onNavy: "#F3F4FA",
+  navyMuted: "#A3A8C3",
+  bg: "#0B0E26",
+  surface: "#171B3D",
+  surfaceAlt: "#222850",
+  text: "#F3F4FA",
+  textMuted: "#A3A8C3",
+  separator: "#2C3260",
+  accent: "#FF6B6B",
+  onAccent: "#0B0E26",
+  accentText: "#FF6B6B",
+  accentSoft: "#3A1F2B",
+  primary: "#7FA6FF",
+  onPrimary: "#0B0E26",
+  primarySoft: "#1B2350",
+  yellow: "#F5C451",
+  yellowSoft: "#3A3218",
+  focus: "#7FA6FF",
 };
 
 export const space = { xs: 4, s: 8, m: 12, l: 20, xl: 32 } as const;
-export const radius = { section: 14, button: 10, lane: 3 } as const;
+export const radius = { card: 20, section: 16, button: 12, pill: 999, lane: 3 } as const;
 
 /** Scroll content: phone padding, and a readable column on tablets and wide windows. */
 export const screenContent = {
@@ -67,9 +90,12 @@ export const screenContent = {
   alignSelf: "center",
 } as const;
 
+/** Plus Jakarta Sans, one family per weight because Android cannot synthesise weights for custom fonts. */
 export const fonts = {
-  numeral: "BarlowCondensed_600SemiBold",
-  numeralBold: "BarlowCondensed_700Bold",
+  regular: "PlusJakartaSans_500Medium",
+  medium: "PlusJakartaSans_600SemiBold",
+  bold: "PlusJakartaSans_700Bold",
+  heavy: "PlusJakartaSans_800ExtraBold",
 };
 
 export function useResolvedScheme(): "light" | "dark" {
@@ -83,8 +109,8 @@ export function useTheme(): Theme {
   return useResolvedScheme() === "dark" ? dark : light;
 }
 
-export function effortColor(theme: Theme, type: WorkoutType): { fill: string; on: string; soft: string } {
+export function effortColor(theme: Theme, type: WorkoutType): { fill: string; on: string; soft: string; text: string } {
   return effortTone(type) === "hard"
-    ? { fill: theme.track, on: theme.onTrack, soft: theme.trackSoft }
-    : { fill: theme.field, on: theme.onField, soft: theme.fieldSoft };
+    ? { fill: theme.accent, on: theme.onAccent, soft: theme.accentSoft, text: theme.accentText }
+    : { fill: theme.primary, on: theme.onPrimary, soft: theme.primarySoft, text: theme.primary };
 }

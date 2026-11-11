@@ -47,7 +47,7 @@ export function RunScreen() {
     const granted = (await checkPermission()) || (ask && (await requestPermission()));
     if (!granted) return;
     try {
-      await startTracking({ title: t.run.freeRun, body: workout ? t.workout[workout.type] : t.run.gpsReady, color: theme.track });
+      await startTracking({ title: t.run.freeRun, body: workout ? t.workout[workout.type] : t.run.gpsReady, color: theme.accent });
     } catch (e) {
       useRunStore.getState().setGps({ error: e instanceof Error ? e.message : String(e) });
     }
@@ -151,7 +151,7 @@ export function RunScreen() {
     <View style={{ flex: 1, backgroundColor: theme.bg, paddingTop: insets.top + 8, paddingBottom: insets.bottom + 12 }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, gap: space.s }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flexShrink: 1 }} accessibilityLiveRegion="polite">
-          <Icon name="gps" size={16} color={gpsGood ? theme.field : theme.textMuted} />
+          <Icon name="gps" size={16} color={gpsGood ? theme.primary : theme.textMuted} />
           <Txt variant="label" muted numberOfLines={1}>
             {gpsLabel}
           </Txt>
@@ -170,8 +170,8 @@ export function RunScreen() {
         <Txt variant="title">{workout ? t.workout[workout.type] : t.run.freeRun}</Txt>
 
         {gps.permission === "denied" ? (
-          <View style={{ backgroundColor: theme.trackSoft, borderRadius: radius.section, padding: 16, gap: space.m }}>
-            <Txt variant="heading" color={theme.track}>
+          <View style={{ backgroundColor: theme.accentSoft, borderRadius: radius.section, padding: 16, gap: space.m }}>
+            <Txt variant="heading" color={theme.accentText}>
               {t.run.permissionTitle}
             </Txt>
             <Txt>{t.run.permissionBody}</Txt>
@@ -209,7 +209,7 @@ export function RunScreen() {
                 </Txt>
               </>
             ) : (
-              <Txt variant="heading" color={theme.field}>
+              <Txt variant="heading" color={theme.primary}>
                 {t.run.workoutDone}
               </Txt>
             )}
@@ -228,7 +228,7 @@ export function RunScreen() {
               label={`${t.run.pace} (${f.perUnit})`}
               value={f.pace(pace)}
               size={view === "map" ? 36 : 48}
-              color={offPace ? theme.track : undefined}
+              color={offPace ? theme.accentText : undefined}
               note={offPace === "fast" ? t.cue.slowDown : offPace === "slow" ? t.cue.speedUp : undefined}
             />
             <BigMetric label={`${t.run.avgPace} (${f.perUnit})`} value={f.pace(avg)} size={view === "map" ? 36 : 48} />

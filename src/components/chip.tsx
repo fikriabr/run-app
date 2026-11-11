@@ -32,21 +32,21 @@ export function Chip({ label, hint, selected, onPress, role = "radio", disabled,
           justifyContent: "center",
           borderRadius: radius.button,
           borderCurve: "continuous",
-          backgroundColor: selected ? theme.text : state.pressed ? theme.separator : theme.surfaceAlt,
+          backgroundColor: selected ? theme.primary : state.pressed ? theme.separator : theme.surfaceAlt,
           opacity: disabled ? 0.45 : 1,
           cursor: disabled ? "not-allowed" : "pointer",
-          outlineColor: theme.track,
+          outlineColor: theme.focus,
           outlineStyle: focused ? "solid" : undefined,
           outlineWidth: focused ? 2 : 0,
           outlineOffset: 2,
         } as ViewStyle;
       }}
     >
-      <Txt variant="heading" color={selected ? theme.bg : theme.text} style={{ textAlign: hint ? "left" : "center" }}>
+      <Txt variant="heading" color={selected ? theme.onPrimary : theme.text} style={{ textAlign: hint ? "left" : "center" }}>
         {label}
       </Txt>
       {hint ? (
-        <Txt variant="caption" color={selected ? theme.bg : theme.textMuted}>
+        <Txt variant="caption" color={selected ? theme.onPrimary : theme.textMuted}>
           {hint}
         </Txt>
       ) : null}

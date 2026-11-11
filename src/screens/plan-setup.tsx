@@ -15,7 +15,7 @@ import { DEFAULT_WEEKS, MAX_WEEKS, MIN_WEEKS } from "@/lib/plan-generator";
 import type { GoalKind, Zone } from "@/lib/types";
 import { GOAL_DISTANCE, LEVEL_VDOT, LEVEL_WEEKLY_KM, predictRaceTime, vdotFromPerformance } from "@/lib/vdot";
 import { useAppStore } from "@/store/app-store";
-import { radius, space, useTheme, screenContent } from "@/theme";
+import { radius, space, useTheme, screenContent, fonts } from "@/theme";
 
 const GOALS: GoalKind[] = ["5k", "10k", "half", "marathon", "fitness"];
 const RESULT_DISTANCES = ["5k", "10k", "half", "marathon"] as const;
@@ -166,12 +166,13 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
                   borderRadius: radius.button,
                   backgroundColor: theme.surfaceAlt,
                   color: theme.text,
+                  fontFamily: fonts.bold,
                   fontSize: 20,
                   fontVariant: ["tabular-nums"],
                 }}
               />
               {resultError ? (
-                <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite" selectable>
+                <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite" selectable>
                   {resultError}
                 </Txt>
               ) : null}
@@ -235,7 +236,7 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
           ))}
         </ChipRow>
         {daysError ? (
-          <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite">
+          <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
             {daysError}
           </Txt>
         ) : null}

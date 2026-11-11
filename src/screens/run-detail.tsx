@@ -128,7 +128,7 @@ export function RunDetailScreen() {
                     {isPartial(s.distance) ? f.distance(s.distance, 2) : String(i + 1)}
                   </Txt>
                   <View style={{ flex: 1, height: 10, backgroundColor: theme.surfaceAlt, borderRadius: radius.lane }}>
-                    <View style={{ width: `${share * 100}%`, height: 10, borderRadius: radius.lane, backgroundColor: pace === fastest ? theme.track : theme.field }} />
+                    <View style={{ width: `${share * 100}%`, height: 10, borderRadius: radius.lane, backgroundColor: pace === fastest ? theme.accent : theme.primary }} />
                   </View>
                   <Txt selectable style={{ width: 52, textAlign: "right", fontVariant: ["tabular-nums"] }}>
                     {f.pace(pace)}
@@ -166,7 +166,7 @@ export function RunDetailScreen() {
       <View style={{ gap: space.s }}>
         {points.length > 1 ? <Button label={t.activity.export} kind="secondary" icon="share" loading={exporting} onPress={() => void exportGpx()} /> : null}
         {exportError ? (
-          <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite">
+          <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
             {t.activity.exportFailed}
           </Txt>
         ) : null}

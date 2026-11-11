@@ -16,7 +16,7 @@ import { averagePace, toActivity } from "@/lib/run-engine";
 import { newId, useAppStore } from "@/store/app-store";
 import { useRunStore } from "@/store/run-store";
 import { confirm } from "@/services/confirm";
-import { radius, space, useTheme, screenContent } from "@/theme";
+import { radius, space, useTheme, screenContent, fonts } from "@/theme";
 
 export function RunSaveScreen() {
   const t = useT();
@@ -91,7 +91,7 @@ export function RunSaveScreen() {
             <Chip key={n} label={String(n)} selected={rpe === n} onPress={() => setRpe(rpe === n ? null : n)} />
           ))}
         </ChipRow>
-        <Txt variant="heading" accessibilityLiveRegion="polite" color={rpe != null && rpe >= 7 ? theme.track : theme.field}>
+        <Txt variant="heading" accessibilityLiveRegion="polite" color={rpe != null && rpe >= 7 ? theme.accentText : theme.primary}>
           {rpe != null ? t.save.rpe[rpe] : " "}
         </Txt>
       </View>
@@ -106,7 +106,7 @@ export function RunSaveScreen() {
             placeholderTextColor={theme.textMuted}
             multiline
             aria-label={t.save.note}
-            style={{ minHeight: 96, padding: 16, color: theme.text, fontSize: 16, textAlignVertical: "top", borderRadius: radius.section }}
+            style={{ minHeight: 96, padding: 16, color: theme.text, fontFamily: fonts.medium, fontSize: 16, textAlignVertical: "top", borderRadius: radius.section }}
           />
         </Section>
       </View>

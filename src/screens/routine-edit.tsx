@@ -12,7 +12,7 @@ import { useLocalized, useT } from "@/i18n";
 import type { ExerciseCategory, RoutineItem } from "@/lib/training-types";
 import { useRoutineDraft } from "@/store/routine-draft";
 import { newTrainingId, useTrainingStore } from "@/store/training-store";
-import { radius, screenContent, space, useTheme } from "@/theme";
+import { radius, screenContent, space, useTheme, fonts } from "@/theme";
 
 const CATEGORIES: ExerciseCategory[] = ["strength", "core", "plyometric", "yoga", "diastasis", "mobility"];
 
@@ -63,7 +63,7 @@ export function RoutineEditScreen() {
           placeholder={t.training.namePlaceholder}
           placeholderTextColor={theme.textMuted}
           aria-label={t.training.nameLabel}
-          style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surface, color: theme.text, fontSize: 17 }}
+          style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surface, color: theme.text, fontFamily: fonts.medium, fontSize: 17 }}
         />
       </View>
 
@@ -109,7 +109,7 @@ export function RoutineEditScreen() {
       </View>
 
       {error ? (
-        <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite">
+        <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
           {error}
         </Txt>
       ) : null}
@@ -159,7 +159,7 @@ function Field({ label, value, min, max, onChange }: { label: string; value: num
         inputMode="numeric"
         selectTextOnFocus
         aria-label={label}
-        style={{ height: 44, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontSize: 17, textAlign: "center", fontVariant: ["tabular-nums"] }}
+        style={{ height: 44, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontFamily: fonts.medium, fontSize: 17, textAlign: "center", fontVariant: ["tabular-nums"] }}
       />
     </View>
   );

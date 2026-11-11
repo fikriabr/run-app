@@ -9,7 +9,7 @@ import { useT } from "@/i18n";
 import { parseDuration } from "@/lib/format";
 import { GOAL_DISTANCE, vdotFromPerformance } from "@/lib/vdot";
 import { useAppStore } from "@/store/app-store";
-import { radius, space, useTheme, screenContent } from "@/theme";
+import { radius, space, useTheme, screenContent, fonts } from "@/theme";
 
 const DISTANCES = ["5k", "10k", "half", "marathon"] as const;
 
@@ -30,7 +30,7 @@ export function FitnessScreen() {
         <Txt variant="label" muted>
           {t.you.fitness}
         </Txt>
-        <Num size={56} color={theme.track} selectable>
+        <Num size={56} color={theme.accentText} selectable>
           {vdot.toFixed(1)}
         </Num>
       </View>
@@ -51,10 +51,10 @@ export function FitnessScreen() {
             keyboardType="numbers-and-punctuation"
             autoCorrect={false}
             aria-label={t.onboarding.resultTime}
-            style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontSize: 20 }}
+            style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontFamily: fonts.medium, fontSize: 20 }}
           />
           {invalid ? (
-            <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite">
+            <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
               {t.onboarding.resultInvalid}
             </Txt>
           ) : null}

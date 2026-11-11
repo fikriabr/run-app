@@ -37,7 +37,7 @@ export function LaneChart({ steps, vdot, goal, height = 56, activeIndex, activeP
           const w = Math.max(3, (durations[i] / total) * usable);
           const h = Math.max(6, zoneIntensity(step.zone) * (height - 4));
           const hard = step.kind === "work" && step.zone !== "easy" && step.zone !== "long";
-          const color = step.zone == null ? theme.separator : hard ? theme.track : theme.field;
+          const color = step.zone == null ? theme.separator : hard ? theme.accent : theme.primary;
           const done = activeIndex != null && i < activeIndex;
           const active = activeIndex === i;
           const rectX = x;

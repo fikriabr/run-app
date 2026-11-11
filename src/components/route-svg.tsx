@@ -35,12 +35,12 @@ export function RouteSvg({ points, height, accessibilityLabel }: RouteViewProps)
         <Polyline
           points={coords.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ")}
           fill="none"
-          stroke={theme.track}
+          stroke={theme.accent}
           strokeWidth={8}
           strokeLinejoin="round"
           strokeLinecap="round"
         />
-        <Circle cx={coords[0][0]} cy={coords[0][1]} r={14} fill={theme.field} stroke={theme.surface} strokeWidth={5} />
+        <Circle cx={coords[0][0]} cy={coords[0][1]} r={14} fill={theme.primary} stroke={theme.surface} strokeWidth={5} />
         <Circle cx={last[0]} cy={last[1]} r={14} fill={theme.text} stroke={theme.surface} strokeWidth={5} />
       </>
     );

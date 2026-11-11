@@ -1,17 +1,17 @@
 import { NativeTabs } from "expo-router/native-tabs";
 import { useT } from "@/i18n";
-import { useTheme } from "@/theme";
+import { fonts, useTheme } from "@/theme";
 
 export default function TabsLayout() {
   const t = useT();
   const theme = useTheme();
   return (
     <NativeTabs
-      tintColor={theme.track}
+      tintColor={theme.text}
       backgroundColor={theme.surface}
-      iconColor={{ default: theme.textMuted, selected: theme.track }}
-      labelStyle={{ default: { color: theme.textMuted }, selected: { color: theme.track } }}
-      indicatorColor={theme.trackSoft}
+      iconColor={{ default: theme.textMuted, selected: theme.text }}
+      labelStyle={{ default: { color: theme.textMuted, fontFamily: fonts.medium }, selected: { color: theme.text, fontFamily: fonts.bold } }}
+      indicatorColor={theme.primarySoft}
       minimizeBehavior="onScrollDown"
     >
       <NativeTabs.Trigger name="(today)">

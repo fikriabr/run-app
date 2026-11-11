@@ -6,8 +6,8 @@ import { Txt } from "./text";
 
 export function Banner({ icon, title, body, tone = "neutral", children }: { icon: IconName; title: string; body?: string; tone?: "neutral" | "good" | "attention"; children?: ReactNode }) {
   const theme = useTheme();
-  const bg = tone === "good" ? theme.fieldSoft : tone === "attention" ? theme.trackSoft : theme.surfaceAlt;
-  const fg = tone === "good" ? theme.field : tone === "attention" ? theme.track : theme.text;
+  const bg = tone === "good" ? theme.primarySoft : tone === "attention" ? theme.accentSoft : theme.surfaceAlt;
+  const fg = tone === "good" ? theme.primary : tone === "attention" ? theme.accentText : theme.text;
   return (
     <View style={{ backgroundColor: bg, borderRadius: radius.section, borderCurve: "continuous", padding: 16, gap: space.m }} accessibilityRole="summary">
       <View style={{ flexDirection: "row", gap: space.m }}>

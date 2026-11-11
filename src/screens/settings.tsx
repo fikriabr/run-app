@@ -45,7 +45,7 @@ export function SettingsScreen() {
         disabled={disabled}
         accessibilityLabelledBy={`setting-${key}`}
         aria-label={label}
-        trackColor={{ true: theme.field, false: theme.separator }}
+        trackColor={{ true: theme.primary, false: theme.separator }}
         thumbColor={process.env.EXPO_OS === "android" ? theme.surface : undefined}
       />
     </View>

@@ -9,7 +9,7 @@ import { useLocalized, useT } from "@/i18n";
 import type { ExerciseCategory } from "@/lib/training-types";
 import { useActiveSession } from "@/store/training-store";
 import { useRoutineDraft } from "@/store/routine-draft";
-import { radius, screenContent, space, useTheme } from "@/theme";
+import { radius, screenContent, space, useTheme, fonts } from "@/theme";
 import { CategoryMark } from "./training-shared";
 
 const CATEGORIES: ExerciseCategory[] = ["strength", "core", "plyometric", "yoga", "diastasis", "mobility"];
@@ -63,7 +63,7 @@ export function ExerciseLibraryScreen() {
             aria-label={t.training.search}
             autoCorrect={false}
             clearButtonMode="while-editing"
-            style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surface, color: theme.text, fontSize: 16 }}
+            style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surface, color: theme.text, fontFamily: fonts.medium, fontSize: 16 }}
           />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.s }} keyboardShouldPersistTaps="handled">
             <Chip label={t.training.all} selected={category == null} onPress={() => setCategory(null)} />

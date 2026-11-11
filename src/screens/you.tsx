@@ -39,7 +39,7 @@ export function YouScreen() {
         <Txt variant="label" muted>
           {t.you.fitness}
         </Txt>
-        <Num size={64} selectable color={theme.track}>
+        <Num size={64} selectable color={theme.accentText}>
           {vdot.toFixed(1)}
         </Num>
         <Txt variant="caption" muted>
@@ -118,7 +118,7 @@ export function YouScreen() {
                 key={`${h.at}-${i}`}
                 title={`${h.from.toFixed(1)} → ${h.to.toFixed(1)}`}
                 subtitle={`${t.you.reason[h.reason]} · ${f.dateTime(h.at)}`}
-                leading={<Icon name={h.to >= h.from ? "up" : "down"} size={18} color={h.to >= h.from ? theme.field : theme.track} />}
+                leading={<Icon name={h.to >= h.from ? "up" : "down"} size={18} color={h.to >= h.from ? theme.primary : theme.accent} />}
               />
             ))}
           </Section>

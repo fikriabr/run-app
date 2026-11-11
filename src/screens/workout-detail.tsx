@@ -42,7 +42,7 @@ export function WorkoutDetailScreen() {
     <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ ...screenContent, gap: space.xl }}>
       <Stack.Screen options={{ title: t.workout[workout.type] }} />
       <View style={{ gap: space.m }}>
-        <Txt variant="label" color={color.fill}>
+        <Txt variant="label" color={color.text}>
           {f.dayLong(workout.date)} · {t.common.week(workout.week + 1)}
         </Txt>
         <LaneChart steps={workout.steps} vdot={vdot} goal={goal} height={72} accessibilityLabel={t.workoutDetail.structure} />

@@ -25,11 +25,11 @@ export function WorkoutCard({ workout, vdot, goal, showStart }: { workout: Worko
   const done = workout.status === "completed";
 
   return (
-    <View style={{ backgroundColor: theme.surface, borderRadius: radius.section, borderCurve: "continuous", padding: 20, gap: space.l }}>
+    <View style={{ backgroundColor: theme.surface, borderRadius: radius.card, borderCurve: "continuous", padding: 20, gap: space.l }}>
       <View style={{ gap: space.s }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
           <EffortMark type={workout.type} />
-          <Txt variant="label" color={color.fill}>
+          <Txt variant="label" color={color.text}>
             {done ? t.today.completed : f.dayLong(workout.date)}
           </Txt>
         </View>

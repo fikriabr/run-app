@@ -1,13 +1,13 @@
 import { Children, Fragment, type ReactNode } from "react";
 import { Pressable, StyleSheet, View, type ViewStyle } from "react-native";
-import { radius, space, useTheme } from "@/theme";
+import { fonts, radius, space, useTheme } from "@/theme";
 import { Icon } from "./icon";
 import { Txt } from "./text";
 
 export function SectionTitle({ children, action }: { children: string; action?: ReactNode }) {
   return (
     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4, gap: space.s }}>
-      <Txt variant="label" muted accessibilityRole="header" style={{ flexShrink: 1 }}>
+      <Txt variant="heading" accessibilityRole="header" style={{ flexShrink: 1, fontSize: 20, lineHeight: 26, fontFamily: fonts.heavy }}>
         {children}
       </Txt>
       {action}
@@ -47,7 +47,7 @@ export function Row({ title, subtitle, value, leading, trailing, onPress, access
     <View style={{ flexDirection: "row", alignItems: "center", gap: space.m, paddingHorizontal: 16, paddingVertical: 12, minHeight: 52 }}>
       {leading}
       <View style={{ flex: 1, gap: 2 }}>
-        <Txt variant="body" numberOfLines={2}>
+        <Txt variant="body" numberOfLines={2} style={{ fontFamily: fonts.medium }}>
           {title}
         </Txt>
         {subtitle ? (
@@ -62,7 +62,7 @@ export function Row({ title, subtitle, value, leading, trailing, onPress, access
         </Txt>
       ) : null}
       {trailing}
-      {onPress ? <Icon name="chevron" size={14} color={theme.textMuted} /> : null}
+      {onPress ? <Icon name="chevron" size={14} color={theme.primary} /> : null}
     </View>
   );
   if (!onPress) return content;

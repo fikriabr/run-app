@@ -71,7 +71,7 @@ export function WorkoutSteps({ steps, vdot, goal }: { steps: WorkoutStep[]; vdot
         }
         return (
           <View key={i} style={{ flexDirection: "row", gap: space.m }}>
-            <Txt variant="heading" color={theme.track} style={{ width: 92 }}>
+            <Txt variant="heading" color={theme.accentText} style={{ width: 92 }}>
               {t.repeatTimes(g.of)}
             </Txt>
             <View style={{ flex: 1, gap: space.s }}>

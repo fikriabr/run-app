@@ -33,13 +33,13 @@ export function Stepper({ value, min, max, step = 1, label, format, onChange }: 
             borderCurve: "continuous",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: pressed ? theme.separator : theme.surfaceAlt,
+            backgroundColor: pressed ? theme.separator : theme.primarySoft,
             opacity: disabled ? 0.4 : 1,
             cursor: disabled ? "not-allowed" : "pointer",
           }) as ViewStyle
         }
       >
-        <Icon name={dir < 0 ? "minus" : "plus"} size={18} color={theme.text} />
+        <Icon name={dir < 0 ? "minus" : "plus"} size={18} color={theme.primary} />
       </Pressable>
     );
   };

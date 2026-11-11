@@ -2,7 +2,7 @@ import { Tabs } from "expo-router/tabs";
 import type { ColorValue } from "react-native";
 import { Icon, type IconName } from "@/components/icon";
 import { useT } from "@/i18n";
-import { useTheme } from "@/theme";
+import { fonts, useTheme } from "@/theme";
 
 // The web fallback of NativeTabs is a floating top bar that covers stack headers, so web uses a bottom bar.
 export default function TabsLayoutWeb() {
@@ -16,11 +16,11 @@ export default function TabsLayoutWeb() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: theme.track,
+        tabBarActiveTintColor: theme.text,
         tabBarInactiveTintColor: theme.textMuted,
-        tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.separator, height: 64 },
-        tabBarItemStyle: { paddingVertical: 6 },
-        tabBarLabelStyle: { fontSize: 12, fontWeight: "600" },
+        tabBarStyle: { backgroundColor: theme.surface, borderTopColor: theme.separator, height: 76 },
+        tabBarItemStyle: { paddingTop: 8, paddingBottom: 10 },
+        tabBarLabelStyle: { fontSize: 12, fontFamily: fonts.bold },
       }}
     >
       <Tabs.Screen name="(today)" options={{ title: t.tabs.today, tabBarIcon: icon("today") }} />

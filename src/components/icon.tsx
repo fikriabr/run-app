@@ -31,6 +31,7 @@ const ICONS = {
   rest: ["moon.zzz", "bedtime"],
   route: ["point.topleft.down.to.point.bottomright.curvepath", "route"],
   book: ["book", "menu_book"],
+  tick: ["checkmark", "check"],
   strength: ["dumbbell", "fitness_center"],
   video: ["play.rectangle", "smart_display"],
   search: ["magnifyingglass", "search"],

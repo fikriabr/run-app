@@ -1,14 +1,16 @@
 import { Text, type TextProps, type TextStyle } from "react-native";
 import { fonts, useTheme } from "@/theme";
 
-type Variant = "title" | "heading" | "body" | "label" | "caption";
+type Variant = "display" | "title" | "heading" | "body" | "label" | "caption";
 
+// Weight is carried by the font family, so fontWeight stays unset to avoid faux-bold on iOS.
 const VARIANTS: Record<Variant, TextStyle> = {
-  title: { fontSize: 22, fontWeight: "700", lineHeight: 28 },
-  heading: { fontSize: 17, fontWeight: "600", lineHeight: 22 },
-  body: { fontSize: 16, fontWeight: "400", lineHeight: 22 },
-  label: { fontSize: 13, fontWeight: "600", lineHeight: 18 },
-  caption: { fontSize: 13, fontWeight: "400", lineHeight: 18 },
+  display: { fontFamily: fonts.heavy, fontSize: 28, lineHeight: 34, letterSpacing: -0.4 },
+  title: { fontFamily: fonts.heavy, fontSize: 22, lineHeight: 28, letterSpacing: -0.3 },
+  heading: { fontFamily: fonts.bold, fontSize: 17, lineHeight: 22 },
+  body: { fontFamily: fonts.regular, fontSize: 16, lineHeight: 23 },
+  label: { fontFamily: fonts.bold, fontSize: 13, lineHeight: 18 },
+  caption: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18 },
 };
 
 interface TxtProps extends TextProps {
@@ -27,7 +29,7 @@ interface NumProps extends TextProps {
   color?: string;
 }
 
-/** Scoreboard numerals: condensed so long times and paces fit at large sizes. */
+/** Numbers in the heaviest weight with tabular figures, so a ticking clock does not jitter. */
 export function Num({ size = 26, color, style, ...rest }: NumProps) {
   const theme = useTheme();
   return (
@@ -35,9 +37,10 @@ export function Num({ size = 26, color, style, ...rest }: NumProps) {
       {...rest}
       style={[
         {
-          fontFamily: fonts.numeral,
+          fontFamily: fonts.heavy,
           fontSize: size,
-          lineHeight: Math.round(size * 1.1),
+          lineHeight: Math.round(size * 1.15),
+          letterSpacing: size >= 40 ? -1 : -0.3,
           color: color ?? theme.text,
           fontVariant: ["tabular-nums"],
         },

@@ -16,10 +16,10 @@ interface ButtonProps extends Omit<PressableProps, "style" | "children"> {
 export function Button({ label, kind = "primary", icon, loading, disabled, style, ...rest }: ButtonProps) {
   const theme = useTheme();
   const palette: Record<Kind, { bg: string; fg: string }> = {
-    primary: { bg: theme.track, fg: theme.onTrack },
-    secondary: { bg: theme.surfaceAlt, fg: theme.text },
-    plain: { bg: "transparent", fg: theme.text },
-    danger: { bg: "transparent", fg: theme.track },
+    primary: { bg: theme.accent, fg: theme.onAccent },
+    secondary: { bg: theme.primarySoft, fg: theme.primary },
+    plain: { bg: "transparent", fg: theme.primary },
+    danger: { bg: "transparent", fg: theme.accentText },
   };
   const { bg, fg } = palette[kind];
   const inactive = disabled || loading;
@@ -36,9 +36,10 @@ export function Button({ label, kind = "primary", icon, loading, disabled, style
         const focused = (state as { focused?: boolean }).focused;
         return [
           {
-            minHeight: 48,
-            paddingHorizontal: 18,
-            borderRadius: radius.button,
+            minHeight: 52,
+            paddingHorizontal: 20,
+            // The main action is a pill so it reads as the one thing to tap; quieter buttons keep square corners.
+            borderRadius: kind === "primary" ? radius.pill : radius.button,
             borderCurve: "continuous",
             backgroundColor: bg,
             alignItems: "center",

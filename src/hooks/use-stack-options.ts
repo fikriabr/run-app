@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 import type { Stack } from "expo-router";
-import { useTheme } from "@/theme";
+import { fonts, useTheme } from "@/theme";
 
 type ScreenOptions = NonNullable<ComponentProps<typeof Stack>["screenOptions"]>;
 
@@ -13,9 +13,9 @@ export function useStackOptions(largeTitle = false): Exclude<ScreenOptions, (...
     headerLargeTitleShadowVisible: false,
     headerStyle: { backgroundColor: theme.bg },
     headerLargeStyle: { backgroundColor: theme.bg },
-    headerTintColor: theme.text,
-    headerTitleStyle: { color: theme.text },
-    headerLargeTitleStyle: { color: theme.text },
+    headerTintColor: theme.primary,
+    headerTitleStyle: { color: theme.text, fontFamily: fonts.bold },
+    headerLargeTitleStyle: { color: theme.text, fontFamily: fonts.heavy },
     headerBackButtonDisplayMode: "minimal",
     contentStyle: { backgroundColor: theme.bg },
   };

@@ -13,7 +13,7 @@ import { useWeight } from "@/hooks/use-weight";
 import { useLocalized, useT } from "@/i18n";
 import { exerciseBests, exerciseHistory, parseYouTubeId } from "@/lib/training";
 import { useTrainingStore } from "@/store/training-store";
-import { radius, screenContent, space, useTheme } from "@/theme";
+import { radius, screenContent, space, useTheme, fonts } from "@/theme";
 
 export function ExerciseDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -92,10 +92,10 @@ export function ExerciseDetailScreen() {
               autoCorrect={false}
               inputMode="url"
               aria-label={t.training.videoLinkLabel}
-              style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontSize: 16 }}
+              style={{ minHeight: 48, paddingHorizontal: 14, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontFamily: fonts.medium, fontSize: 16 }}
             />
             {linkError ? (
-              <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite">
+              <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
                 {t.training.videoInvalid}
               </Txt>
             ) : null}
@@ -123,7 +123,7 @@ export function ExerciseDetailScreen() {
         <Section style={{ padding: 16, gap: space.m }}>
           {exercise.steps[lang].map((step, i) => (
             <View key={i} style={{ flexDirection: "row", gap: space.m }}>
-              <Num size={22} color={theme.track} style={{ width: 20 }}>
+              <Num size={22} color={theme.accentText} style={{ width: 20 }}>
                 {i + 1}
               </Num>
               <Txt style={{ flex: 1 }}>{step}</Txt>

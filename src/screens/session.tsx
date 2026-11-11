@@ -16,7 +16,7 @@ import type { LoggedSet, SessionExercise } from "@/lib/training-types";
 import { useAppStore } from "@/store/app-store";
 import { useActiveSession, useTrainingStore } from "@/store/training-store";
 import { confirm } from "@/services/confirm";
-import { radius, screenContent, space, useTheme } from "@/theme";
+import { radius, screenContent, space, useTheme, fonts } from "@/theme";
 
 export function SessionScreen() {
   const t = useT();
@@ -113,7 +113,7 @@ export function SessionScreen() {
 
         <Button label={t.training.addExercise} kind="secondary" icon="plus" onPress={() => router.push({ pathname: "/exercises", params: { pick: "session" } })} />
         {error ? (
-          <Txt variant="caption" color={theme.track} accessibilityLiveRegion="polite">
+          <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
             {error}
           </Txt>
         ) : null}
@@ -152,7 +152,7 @@ export function SessionScreen() {
             <RestButton label={t.training.skipRest} onPress={() => useActiveSession.getState().clearRest()} />
           </View>
           <View style={{ height: 4, borderRadius: 2, backgroundColor: theme.textMuted }}>
-            <View style={{ height: 4, borderRadius: 2, backgroundColor: theme.track, width: `${Math.max(0, Math.min(1, restLeft / Math.max(1, restTotal))) * 100}%` }} />
+            <View style={{ height: 4, borderRadius: 2, backgroundColor: theme.accent, width: `${Math.max(0, Math.min(1, restLeft / Math.max(1, restTotal))) * 100}%` }} />
           </View>
         </View>
       ) : null}
@@ -219,7 +219,7 @@ function ExerciseCard({ index, total, exercise, previous, now }: { index: number
           accessibilityRole="link"
           onPress={() => router.push({ pathname: "/exercises/[id]", params: { id: info.id } })}
         >
-          <Txt variant="heading" color={theme.track}>
+          <Txt variant="heading" style={{ fontSize: 18 }}>
             {l(info.name)}
           </Txt>
           <Txt variant="caption" muted>
@@ -252,7 +252,7 @@ function ExerciseCard({ index, total, exercise, previous, now }: { index: number
       {exercise.sets.map((set, i) => (
         <View
           key={i}
-          style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 4, backgroundColor: set.done ? theme.fieldSoft : "transparent" }}
+          style={{ flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 12, paddingVertical: 4, backgroundColor: set.done ? theme.primarySoft : "transparent" }}
         >
           <Num size={20} style={{ width: 28, textAlign: "center" }}>
             {i + 1}
@@ -291,12 +291,12 @@ function ExerciseCard({ index, total, exercise, previous, now }: { index: number
                 borderRadius: radius.button,
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: set.done ? theme.field : pressed ? theme.separator : theme.surfaceAlt,
+                backgroundColor: set.done ? theme.primary : pressed ? theme.separator : theme.surfaceAlt,
                 cursor: "pointer",
               }) as ViewStyle
             }
           >
-            <Icon name="check" size={20} color={set.done ? theme.onField : theme.textMuted} />
+            <Icon name="check" size={20} color={set.done ? theme.onPrimary : theme.textMuted} />
           </Pressable>
         </View>
       ))}
@@ -346,11 +346,12 @@ function NumberCell({ value, onCommit, width, decimal, label }: { value: string;
         borderRadius: radius.button,
         backgroundColor: theme.surfaceAlt,
         color: theme.text,
+        fontFamily: fonts.bold,
         fontSize: 17,
         textAlign: "center",
         fontVariant: ["tabular-nums"],
         borderWidth: focused ? 2 : 0,
-        borderColor: theme.track,
+        borderColor: theme.accent,
       }}
     />
   );
