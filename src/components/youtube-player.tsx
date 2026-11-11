@@ -15,9 +15,12 @@ interface YouTubePlayerProps {
   edge?: boolean;
   /** Start straight away, muted and looping, as a demo of the movement. Follows the autoplay setting. */
   ambient?: boolean;
+  /** Segment of the video to play, in seconds; the ambient player loops just this part. */
+  start?: number;
+  end?: number;
 }
 
-export function YouTubePlayer({ videoId, title, playLabel, edge, ambient }: YouTubePlayerProps) {
+export function YouTubePlayer({ videoId, title, playLabel, edge, ambient, start, end }: YouTubePlayerProps) {
   const t = useT();
   const theme = useTheme();
   const autoplay = useAppStore((s) => s.settings.autoplayVideo !== false);
@@ -36,7 +39,7 @@ export function YouTubePlayer({ videoId, title, playLabel, edge, ambient }: YouT
     <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: edge ? 0 : radius.section, borderCurve: "continuous", overflow: "hidden", backgroundColor: theme.navy }}>
       {live ? (
         <>
-          <VideoFrame videoId={videoId} title={title} ambient muted={muted} />
+          <VideoFrame videoId={videoId} title={title} ambient muted={muted} start={start} end={end} />
           <Pressable
             onPress={() => setMuted((m) => !m)}
             accessibilityRole="button"
@@ -60,7 +63,7 @@ export function YouTubePlayer({ videoId, title, playLabel, edge, ambient }: YouT
           </Pressable>
         </>
       ) : playing ? (
-        <VideoFrame videoId={videoId} title={title} />
+        <VideoFrame videoId={videoId} title={title} start={start} end={end} />
       ) : (
         <Pressable
           onPress={() => setPlaying(true)}

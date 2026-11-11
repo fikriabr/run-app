@@ -10,6 +10,9 @@ import {
   exerciseHistory,
   fromDisplayWeight,
   isPersonalBest,
+  formatVideoTime,
+  parseVideoTime,
+  parseYouTubeStart,
   parseYouTubeId,
   previousSets,
   routineDuration,
@@ -188,5 +191,25 @@ describe("isPersonalBest", () => {
   it("never flags a first-ever session or an unticked set", () => {
     expect(isPersonalBest(done({ reps: 20 }), exerciseBests(history, "squat"))).toBe(false);
     expect(isPersonalBest({ ...done({ reps: 8, weight: 30 }), done: false }, exerciseBests(history, "goblet-squat"))).toBe(false);
+  });
+});
+
+describe("video segments", () => {
+  it("reads start times from links", () => {
+    expect(parseYouTubeStart("https://youtu.be/ZLJBfYF_oO0?t=42")).toBe(42);
+    expect(parseYouTubeStart("https://www.youtube.com/watch?v=ZLJBfYF_oO0&t=1m15s")).toBe(75);
+    expect(parseYouTubeStart("https://www.youtube.com/watch?v=ZLJBfYF_oO0&t=1h2m3s")).toBe(3723);
+    expect(parseYouTubeStart("https://www.youtube.com/embed/ZLJBfYF_oO0?start=30")).toBe(30);
+    expect(parseYouTubeStart("https://www.youtube.com/watch?v=ZLJBfYF_oO0")).toBeNull();
+  });
+
+  it("parses and formats times inside a video", () => {
+    expect(parseVideoTime("75")).toBe(75);
+    expect(parseVideoTime("1:15")).toBe(75);
+    expect(parseVideoTime("1:02:03")).toBe(3723);
+    expect(parseVideoTime("1:75")).toBeNull();
+    expect(parseVideoTime("abc")).toBeNull();
+    expect(formatVideoTime(75)).toBe("1:15");
+    expect(formatVideoTime(3723)).toBe("1:02:03");
   });
 });

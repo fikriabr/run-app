@@ -2,6 +2,7 @@ import type { Exercise } from "@/lib/training-types";
 
 // Videos are real YouTube tutorials found by search; titles are kept as listed so the source is visible.
 // They were not playable from the build environment, so the app also offers "watch on YouTube" and "change video".
+// Add `start` and `end` (seconds) to a video to loop only the demo part instead of the whole tutorial.
 
 const PLYO_CAUTION = {
   en: "Land softly and quietly. Skip jumping work if you have a current calf, Achilles or knee injury.",

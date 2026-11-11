@@ -9,7 +9,7 @@ import { YouTubePlayer } from "@/components/youtube-player";
 import { useFormat } from "@/hooks/use-format";
 import { useWeight } from "@/hooks/use-weight";
 import { useLocalized, useT } from "@/i18n";
-import { exerciseBests, exerciseHistory, parseYouTubeId } from "@/lib/training";
+import { exerciseBests, exerciseHistory, formatVideoTime, parseVideoTime, parseYouTubeId, parseYouTubeStart } from "@/lib/training";
 import type { Exercise, LoggedSet } from "@/lib/training-types";
 import { useTrainingStore } from "@/store/training-store";
 import { fonts, radius, space, useTheme } from "@/theme";
@@ -104,7 +104,8 @@ export function VideoOptions({ exercise }: { exercise: Exercise }) {
   const apply = () => {
     const id = parseYouTubeId(link);
     if (!id) return setError(true);
-    setVideo(exercise.id, { id, title: l(exercise.name) });
+    const start = parseYouTubeStart(link);
+    setVideo(exercise.id, { id, title: l(exercise.name), ...(start ? { start } : {}) });
     setEditing(false);
     setLink("");
     setError(false);
@@ -126,6 +127,7 @@ export function VideoOptions({ exercise }: { exercise: Exercise }) {
         ) : null}
         <Button label={t.training.findOtherVideo} kind="secondary" icon="search" style={{ flexGrow: 1 }} onPress={() => void Linking.openURL(searchUrl)} />
       </View>
+      {video ? <SegmentEditor exercise={exercise} /> : null}
       {editing ? (
         <Section style={{ padding: 16, gap: space.m }}>
           <Txt variant="label">{t.training.videoLinkLabel}</Txt>
@@ -173,7 +175,7 @@ export function ExerciseHero({ exercise, subtitle, children }: { exercise: Exerc
   return (
     <View>
       {video ? (
-        <YouTubePlayer videoId={video.id} title={video.title} playLabel={t.training.playVideo(name)} edge ambient />
+        <YouTubePlayer videoId={video.id} title={video.title} playLabel={t.training.playVideo(name)} edge ambient start={video.start} end={video.end} />
       ) : (
         <View style={{ height: 120, backgroundColor: theme.navy }} />
       )}
@@ -200,5 +202,82 @@ export function ExerciseHero({ exercise, subtitle, children }: { exercise: Exerc
         {children}
       </View>
     </View>
+  );
+}
+
+/** Picks which part of the video loops, so the demo shows the movement instead of the intro. */
+function SegmentEditor({ exercise }: { exercise: Exercise }) {
+  const t = useT();
+  const theme = useTheme();
+  const { video } = useExerciseVideo(exercise);
+  const setVideo = useTrainingStore((s) => s.setVideo);
+  const [start, setStart] = useState(video?.start != null ? formatVideoTime(video.start) : "");
+  const [end, setEnd] = useState(video?.end != null ? formatVideoTime(video.end) : "");
+  const [error, setError] = useState(false);
+  if (!video) return null;
+
+  const save = () => {
+    const s = start.trim() ? parseVideoTime(start) : 0;
+    const e = end.trim() ? parseVideoTime(end) : null;
+    if (s == null || (end.trim() && e == null) || (e != null && e <= (s ?? 0))) return setError(true);
+    setError(false);
+    setVideo(exercise.id, { ...video, start: s || undefined, end: e ?? undefined });
+  };
+
+  const whole = () => {
+    setStart("");
+    setEnd("");
+    setError(false);
+    setVideo(exercise.id, { id: video.id, title: video.title });
+  };
+
+  const field = (label: string, value: string, onChange: (v: string) => void) => (
+    <View style={{ flex: 1, gap: 4 }}>
+      <Txt variant="caption" muted>
+        {label}
+      </Txt>
+      <TextInput
+        value={value}
+        onChangeText={(v) => {
+          onChange(v);
+          setError(false);
+        }}
+        placeholder="0:00"
+        placeholderTextColor={theme.textMuted}
+        keyboardType="numbers-and-punctuation"
+        autoCorrect={false}
+        aria-label={label}
+        style={{ height: 48, borderRadius: radius.button, backgroundColor: theme.surfaceAlt, color: theme.text, fontFamily: fonts.bold, fontSize: 18, textAlign: "center", fontVariant: ["tabular-nums"] }}
+      />
+    </View>
+  );
+
+  return (
+    <Section style={{ padding: 16, gap: space.m }}>
+      <View style={{ gap: 2 }}>
+        <Txt variant="heading">{t.training.segmentTitle}</Txt>
+        <Txt variant="caption" muted>
+          {video.start != null || video.end != null
+            ? t.training.segmentCurrent(formatVideoTime(video.start ?? 0), video.end != null ? formatVideoTime(video.end) : t.training.segmentToEnd)
+            : t.training.segmentWholeVideo}
+        </Txt>
+      </View>
+      <Txt variant="caption" muted>
+        {t.training.segmentHint}
+      </Txt>
+      <View style={{ flexDirection: "row", gap: space.s }}>
+        {field(t.training.segmentStart, start, setStart)}
+        {field(t.training.segmentEnd, end, setEnd)}
+      </View>
+      {error ? (
+        <Txt variant="caption" color={theme.accentText} accessibilityLiveRegion="polite">
+          {t.training.segmentInvalid}
+        </Txt>
+      ) : null}
+      <View style={{ flexDirection: "row", gap: space.s }}>
+        <Button label={t.training.segmentWhole} kind="secondary" onPress={whole} style={{ flex: 1 }} />
+        <Button label={t.training.segmentSave} onPress={save} style={{ flex: 1 }} />
+      </View>
+    </Section>
   );
 }

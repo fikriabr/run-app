@@ -179,3 +179,36 @@ export function isPersonalBest(set: LoggedSet, bests: ExerciseBests): boolean {
   return false;
 }
 
+
+/** Reads a start time from a YouTube link: t=75, t=1m15s, t=1h2m3s or start=75. */
+export function parseYouTubeStart(input: string): number | null {
+  const m = input.match(/[?&#](?:t|start)=([0-9hms]+)/);
+  if (!m) return null;
+  const value = m[1];
+  if (/^\d+s?$/.test(value)) return Number(value.replace("s", ""));
+  const parts = value.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+  if (!parts || value === "") return null;
+  const seconds = Number(parts[1] ?? 0) * 3600 + Number(parts[2] ?? 0) * 60 + Number(parts[3] ?? 0);
+  return seconds > 0 ? seconds : null;
+}
+
+/** Accepts "75", "1:15" or "1:02:03" as seconds into a video; null when malformed. */
+export function parseVideoTime(text: string): number | null {
+  const trimmed = text.trim();
+  if (trimmed === "") return null;
+  if (/^\d+$/.test(trimmed)) return Number(trimmed);
+  const parts = trimmed.split(":");
+  if (parts.length < 2 || parts.length > 3 || parts.some((p) => !/^\d+$/.test(p))) return null;
+  const nums = parts.map(Number);
+  if (nums.slice(1).some((n) => n >= 60)) return null;
+  return nums.length === 3 ? nums[0] * 3600 + nums[1] * 60 + nums[2] : nums[0] * 60 + nums[1];
+}
+
+/** "1:15" for a time inside a video. */
+export function formatVideoTime(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = String(s % 60).padStart(2, "0");
+  return h > 0 ? `${h}:${String(m).padStart(2, "0")}:${sec}` : `${m}:${sec}`;
+}

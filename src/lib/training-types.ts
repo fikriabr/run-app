@@ -28,6 +28,10 @@ export interface ExerciseVideo {
   id: string;
   /** Title as listed on YouTube, so the runner knows whose tutorial it is. */
   title: string;
+  /** Seconds into the video where the looped demo starts. */
+  start?: number;
+  /** Seconds into the video where the looped demo ends and jumps back to start. */
+  end?: number;
 }
 
 export interface Exercise {
