@@ -30,6 +30,15 @@ const ICONS = {
   down: ["arrow.down.right", "trending_down"],
   rest: ["moon.zzz", "bedtime"],
   route: ["point.topleft.down.to.point.bottomright.curvepath", "route"],
+  book: ["book", "menu_book"],
+  strength: ["dumbbell", "fitness_center"],
+  video: ["play.rectangle", "smart_display"],
+  search: ["magnifyingglass", "search"],
+  up2: ["chevron.up", "keyboard_arrow_up"],
+  down2: ["chevron.down", "keyboard_arrow_down"],
+  timer: ["timer", "timer"],
+  edit: ["pencil", "edit"],
+  copy: ["doc.on.doc", "content_copy"],
 } satisfies Record<string, [SF, MD]>;
 
 export type IconName = keyof typeof ICONS;

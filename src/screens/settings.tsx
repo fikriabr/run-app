@@ -7,6 +7,7 @@ import { Section, SectionTitle } from "@/components/section";
 import { Txt } from "@/components/text";
 import { useT } from "@/i18n";
 import { type Settings, useAppStore } from "@/store/app-store";
+import { useTrainingStore } from "@/store/training-store";
 import { confirm } from "@/services/confirm";
 import { space, useTheme, screenContent } from "@/theme";
 
@@ -53,6 +54,7 @@ export function SettingsScreen() {
   const reset = async () => {
     if (!(await confirm(t.settings.resetTitle, t.settings.resetBody, t.common.delete, t.common.cancel, true))) return;
     resetAll();
+    useTrainingStore.getState().reset();
     router.dismissAll();
   };
 

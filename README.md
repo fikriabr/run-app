@@ -30,6 +30,17 @@ Aplikasi latihan lari untuk iOS dan Android, dibuat dengan Expo (React Native, N
 - Detail lari: peta rute, split dengan bar kecepatan, hasil per step latihan, tanjakan total, RPE, catatan, ekspor GPX (share sheet), hapus.
 - Halaman Kamu: skor kebugaran, prediksi lomba, tabel pace latihan, grafik jarak 12 minggu, total bulan ini, minggu beruntun, usaha terbaik (1 km, 1 mil, 5K, 10K, half, marathon) yang dihitung dari rute GPS, dan riwayat perubahan kebugaran.
 
+**Latihan kekuatan, pliometrik, yoga, diastasis recti, mobilitas**
+- Tab Latihan dengan 53 gerakan dalam 6 kategori: kekuatan, inti tubuh, pliometrik, yoga, diastasis recti, serta mobilitas dan peregangan. Setiap gerakan punya langkah-langkah (ID/EN), tips, otot yang dilatih, alat, dan peringatan keamanan untuk gerakan lompat dan diastasis recti.
+- Video YouTube per gerakan: thumbnail dulu, diputar di dalam app setelah diketuk (embed youtube-nocookie), plus tombol "Tonton di YouTube", "Cari video lain", dan "Pakai video pilihanku" (tempel link YouTube apa pun).
+- 13 rutinitas siap pakai (kekuatan pelari A/B, stabilitas pinggul, tubuh atas, inti 10 menit, pliometrik dasar dan lanjutan, yoga untuk pelari, yoga malam, diastasis recti dasar dan lanjutan, mobilitas sebelum lari, peregangan setelah lari).
+- Pencatatan set seperti Caliber: kolom set, hasil sesi sebelumnya, beban (kg/lb), repetisi atau detik, centang selesai. Beban otomatis diisi dari sesi terakhir. Timer istirahat muncul setelah set dicentang (+15/−15/lewati, getar saat selesai). Tambah/hapus set, tambah/hapus/urutkan gerakan. Latihan yang berjalan tersimpan, jadi bisa ditinggal dan dilanjutkan.
+- Riwayat per gerakan: beban terberat, perkiraan 1RM (Epley), repetisi terbanyak, tahan terlama, dan set dari 5 sesi terakhir. Ringkasan sesi (durasi, set, volume) dan masuk ke tab Aktivitas.
+- Rutinitas buatan sendiri: susun dari pustaka, atur set/target/istirahat, urutkan, atau salin rutinitas bawaan lalu ubah.
+- Terhubung ke program lari: pilih 0 sampai 2 sesi kekuatan per minggu. Sesi tidak ditempatkan di hari lari jauh, hari sesi berat, atau sehari sebelumnya, tidak berurutan, hanya 1 sesi ringan saat tapering, dan tidak ada di minggu lomba. Muncul di Hari ini dan Program.
+
+Video dipilih dari hasil pencarian YouTube (judul aslinya disimpan dan ditampilkan). youtube.com diblokir dari lingkungan build ini, jadi pemutarannya belum bisa dicek langsung; daftar ada di `src/data/exercises.ts` dan setiap video bisa diganti dari dalam app. Isi latihan diastasis recti bersifat umum dan bukan pengganti pemeriksaan fisioterapis kesehatan panggul.
+
 **Pengaturan**: km/mil, Bahasa Indonesia/English/ikuti sistem, tema terang/gelap/ikuti sistem, panduan suara, umumkan split, peringatan pace, hapus semua data.
 
 Semua data disimpan lokal di ponsel (SQLite lewat `expo-sqlite`). Tidak ada akun atau server.
@@ -38,7 +49,7 @@ Semua data disimpan lokal di ponsel (SQLite lewat `expo-sqlite`). Tidak ada akun
 
 ```bash
 npm install
-npm test            # 33 unit test untuk logika latihan dan perekaman
+npm test            # 47 unit test untuk program, perekaman lari, dan latihan
 npm run typecheck
 ```
 
@@ -61,7 +72,8 @@ Untuk peta Google di build Android, set `GOOGLE_MAPS_ANDROID_API_KEY` sebelum bu
 src/app/         rute Expo Router saja
 src/screens/     isi tiap layar
 src/components/  komponen UI bersama (lane chart, peta rute, grafik, tombol)
-src/lib/         logika murni + tes: VDOT, generator program, engine lari, statistik, adaptasi, GPX
+src/lib/         logika murni + tes: VDOT, generator program, engine lari, statistik, adaptasi, GPX, latihan
+src/data/        pustaka gerakan dan rutinitas bawaan (dua bahasa, dengan video)
 src/services/    lokasi background, panduan suara, dialog konfirmasi
 src/store/       state persisten (zustand + expo-sqlite)
 src/i18n/        teks Bahasa Indonesia dan Inggris
@@ -71,4 +83,4 @@ DESIGN.md        arah visual dan alasan setiap keputusan desain
 
 ## Belum ada
 
-Dibanding Runna, yang belum dibuat: sinkron jam (Apple Watch, Garmin, COROS), sinkron Strava/Apple Health/Health Connect, latihan kekuatan, akun dan sinkron cloud, fitur sosial, dan pembayaran. Aplikasi belum diuji di perangkat iOS atau Android fisik; pengujian sejauh ini adalah unit test, bundling Hermes untuk kedua platform, prebuild native, dan click-through versi web di viewport ponsel dengan GPS disimulasikan.
+Dibanding Runna, yang belum dibuat: sinkron jam (Apple Watch, Garmin, COROS), sinkron Strava/Apple Health/Health Connect, akun dan sinkron cloud, fitur sosial, dan pembayaran. Aplikasi belum diuji di perangkat iOS atau Android fisik; pengujian sejauh ini adalah unit test, bundling Hermes untuk kedua platform, prebuild native, dan click-through versi web di viewport ponsel dengan GPS disimulasikan.

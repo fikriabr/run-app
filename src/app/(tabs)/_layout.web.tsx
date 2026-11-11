@@ -25,6 +25,7 @@ export default function TabsLayoutWeb() {
     >
       <Tabs.Screen name="(today)" options={{ title: t.tabs.today, tabBarIcon: icon("today") }} />
       <Tabs.Screen name="plan" options={{ title: t.tabs.plan, tabBarIcon: icon("plan") }} />
+      <Tabs.Screen name="training" options={{ title: t.tabs.train, tabBarIcon: icon("strength") }} />
       <Tabs.Screen name="activity" options={{ title: t.tabs.activity, tabBarIcon: icon("run") }} />
       <Tabs.Screen name="you" options={{ title: t.tabs.you, tabBarIcon: icon("you") }} />
     </Tabs>

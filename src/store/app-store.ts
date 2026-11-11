@@ -2,8 +2,10 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { applyAdjustment, assessWorkout, moveWorkout } from "@/lib/adapt";
 import { generatePlan } from "@/lib/plan-generator";
+import { scheduleStrength } from "@/lib/strength-schedule";
 import type { Activity, FitnessChange, Language, Plan, PlanInput, RoutePoint, ThemePreference, Units, WorkoutStatus } from "@/lib/types";
 import { clampVdot } from "@/lib/vdot";
+import type { StrengthSlot } from "@/lib/training-types";
 import { clearAllStorage, deleteRoute, persistStorage, saveRoute } from "./storage";
 
 export interface Settings {
@@ -30,6 +32,7 @@ interface AppState {
   createPlan: (input: PlanInput, skipBefore?: string) => void;
   setWorkoutStatus: (workoutId: string, status: WorkoutStatus) => void;
   moveWorkout: (workoutId: string, date: string) => void;
+  setStrengthSlot: (slotId: string, patch: Partial<Pick<StrengthSlot, "status" | "sessionId" | "date">>) => void;
   setVdot: (vdot: number, reason: FitnessChange["reason"]) => void;
   hideMissedPrompt: (until: string) => void;
   saveActivity: (activity: Activity, points: RoutePoint[], rpe: number | null, note: string) => SavedActivity;
@@ -63,7 +66,8 @@ export const useAppStore = create<AppState>()(
       updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
 
       createPlan: (input, skipBefore) => {
-        const plan = generatePlan(input, { planId: newId("p"), skipBefore });
+        const base = generatePlan(input, { planId: newId("p"), skipBefore });
+        const plan = { ...base, strength: scheduleStrength(base, input.strengthPerWeek ?? 0, skipBefore) };
         const previous = get().vdot;
         set((s) => ({
           plan,
@@ -87,6 +91,13 @@ export const useAppStore = create<AppState>()(
                   ),
                 },
               }
+            : {},
+        ),
+
+      setStrengthSlot: (slotId, patch) =>
+        set((s) =>
+          s.plan?.strength
+            ? { plan: { ...s.plan, strength: s.plan.strength.map((x) => (x.id === slotId ? { ...x, ...patch } : x)) } }
             : {},
         ),
 

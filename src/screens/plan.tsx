@@ -11,6 +11,9 @@ import { useT } from "@/i18n";
 import { addDays } from "@/lib/dates";
 import { formatDuration } from "@/lib/format";
 import type { PlanWeek, Workout } from "@/lib/types";
+import type { StrengthSlot } from "@/lib/training-types";
+import { useLocalized } from "@/i18n";
+import { findRoutine, useTrainingStore } from "@/store/training-store";
 import { GOAL_DISTANCE, predictRaceTime } from "@/lib/vdot";
 import { workoutDistance, workoutDuration } from "@/lib/workouts";
 import { useAppStore } from "@/store/app-store";
@@ -25,13 +28,22 @@ export function PlanScreen() {
   const plan = useAppStore((s) => s.plan);
   const vdot = useAppStore((s) => s.vdot) ?? 40;
   const [showPast, setShowPast] = useState(false);
+  const l = useLocalized();
+  const customRoutines = useTrainingStore((s) => s.customRoutines);
   if (!plan) return null;
 
   const goal = plan.input.goal;
   const currentWeek = plan.weeks.find((w) => today >= w.start && today <= addDays(w.start, 6)) ?? (today < plan.weeks[0].start ? plan.weeks[0] : plan.weeks[plan.weeks.length - 1]);
   const pastCount = plan.weeks.filter((w) => w.index < currentWeek.index).length;
   const visibleWeeks = showPast ? plan.weeks : plan.weeks.filter((w) => w.index >= currentWeek.index);
-  const sections = visibleWeeks.map((week) => ({ week, data: plan.workouts.filter((w) => w.week === week.index) }));
+  type Item = { kind: "run"; id: string; date: string; workout: Workout } | { kind: "strength"; id: string; date: string; slot: StrengthSlot };
+  const sections = visibleWeeks.map((week) => ({
+    week,
+    data: [
+      ...plan.workouts.filter((w) => w.week === week.index).map((w): Item => ({ kind: "run", id: w.id, date: w.date, workout: w })),
+      ...(plan.strength ?? []).filter((x) => x.week === week.index).map((x): Item => ({ kind: "strength", id: x.id, date: x.date, slot: x })),
+    ].sort((a, b) => a.date.localeCompare(b.date) || (a.kind === "run" ? -1 : 1)),
+  }));
 
   const statusIcon = (w: Workout) => {
     if (w.status === "completed") return <Icon name="check" size={20} color={theme.field} />;
@@ -104,13 +116,33 @@ export function PlanScreen() {
               borderTopColor: theme.separator,
             }}
           >
-            <Row
-              title={t.workout[item.type]}
-              subtitle={`${item.date === today ? t.plan.today : f.day(item.date)} · ${f.distanceWithUnit(workoutDistance(item, vdot, goal))} · ~${f.minutes(workoutDuration(item, vdot, goal))}`}
-              leading={<EffortMark type={item.type} size={12} />}
-              trailing={statusIcon(item)}
-              onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: item.id } })}
-            />
+            {item.kind === "run" ? (
+              <Row
+                title={t.workout[item.workout.type]}
+                subtitle={`${item.date === today ? t.plan.today : f.day(item.date)} · ${f.distanceWithUnit(workoutDistance(item.workout, vdot, goal))} · ~${f.minutes(workoutDuration(item.workout, vdot, goal))}`}
+                leading={<EffortMark type={item.workout.type} size={12} />}
+                trailing={statusIcon(item.workout)}
+                onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: item.id } })}
+              />
+            ) : (
+              <Row
+                title={l(findRoutine(item.slot.routineId, customRoutines)?.name ?? { en: "Strength", id: "Kekuatan" })}
+                subtitle={`${item.date === today ? t.plan.today : f.day(item.date)} · ${t.training.category.strength}`}
+                leading={<Icon name="strength" size={14} color={theme.textMuted} />}
+                trailing={
+                  item.slot.status === "completed" ? (
+                    <Icon name="check" size={20} color={theme.field} />
+                  ) : item.date < today ? (
+                    <Icon name="missed" size={20} color={theme.textMuted} />
+                  ) : null
+                }
+                onPress={() =>
+                  item.slot.status === "completed" && item.slot.sessionId
+                    ? router.push({ pathname: "/sessions/[id]", params: { id: item.slot.sessionId } })
+                    : router.push({ pathname: "/routines/[id]", params: { id: item.slot.routineId, slot: item.slot.id } })
+                }
+              />
+            )}
           </View>
         );
       }}

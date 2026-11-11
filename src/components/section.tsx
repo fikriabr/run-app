@@ -6,7 +6,7 @@ import { Txt } from "./text";
 
 export function SectionTitle({ children, action }: { children: string; action?: ReactNode }) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", paddingHorizontal: 4, gap: space.s }}>
+    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4, gap: space.s }}>
       <Txt variant="label" muted accessibilityRole="header" style={{ flexShrink: 1 }}>
         {children}
       </Txt>

@@ -4,7 +4,12 @@ import { EmptyState } from "@/components/banner";
 import { Button } from "@/components/button";
 import { Row } from "@/components/section";
 import { useFormat } from "@/hooks/use-format";
-import { useT } from "@/i18n";
+import { useLocalized, useT } from "@/i18n";
+import { Icon } from "@/components/icon";
+import { sessionStats } from "@/lib/training";
+import type { TrainingSession } from "@/lib/training-types";
+import { useTrainingStore } from "@/store/training-store";
+import type { SavedActivity } from "@/store/app-store";
 import { formatDuration } from "@/lib/format";
 import { averagePace } from "@/lib/run-engine";
 import { useAppStore } from "@/store/app-store";
@@ -16,21 +21,28 @@ export function ActivityScreen() {
   const f = useFormat();
   const theme = useTheme();
   const activities = useAppStore((s) => s.activities);
+  const sessions = useTrainingStore((s) => s.sessions);
+  const l = useLocalized();
+  type Item = { kind: "run"; at: number; run: SavedActivity } | { kind: "train"; at: number; session: TrainingSession };
+  const items: Item[] = [
+    ...activities.map((a): Item => ({ kind: "run", at: a.startedAt, run: a })),
+    ...sessions.map((x): Item => ({ kind: "train", at: x.startedAt, session: x })),
+  ].sort((a, b) => b.at - a.at);
 
   return (
     <FlatList
       contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={screenContent}
-      data={activities}
-      keyExtractor={(a) => a.id}
+      data={items}
+      keyExtractor={(i) => (i.kind === "run" ? i.run.id : i.session.id)}
       ListEmptyComponent={
         <EmptyState icon="run" title={t.activity.empty} body={t.activity.emptyHint}>
           <Button label={t.today.freeRun} icon="play" onPress={() => router.push("/run")} />
         </EmptyState>
       }
-      renderItem={({ item, index }) => {
+      renderItem={({ item: entry, index }) => {
         const first = index === 0;
-        const last = index === activities.length - 1;
+        const last = index === items.length - 1;
         return (
           <View
             style={{
@@ -44,12 +56,21 @@ export function ActivityScreen() {
               borderTopColor: theme.separator,
             }}
           >
-            <Row
-              title={`${item.workoutType ? t.workout[item.workoutType] : t.activity.freeRun} · ${f.distanceWithUnit(item.distance, 2)}`}
-              subtitle={`${f.dateTime(item.startedAt)} · ${formatDuration(item.duration)} · ${f.pace(averagePace(item.distance, item.duration * 1000))} ${f.perUnit}`}
-              leading={item.workoutType ? <EffortMark type={item.workoutType} size={12} /> : <View style={{ width: 12, height: 12, borderRadius: 3, backgroundColor: theme.separator }} />}
-              onPress={() => router.push({ pathname: "/runs/[id]", params: { id: item.id } })}
-            />
+            {entry.kind === "run" ? (
+              <Row
+                title={`${entry.run.workoutType ? t.workout[entry.run.workoutType] : t.activity.freeRun} · ${f.distanceWithUnit(entry.run.distance, 2)}`}
+                subtitle={`${f.dateTime(entry.run.startedAt)} · ${formatDuration(entry.run.duration)} · ${f.pace(averagePace(entry.run.distance, entry.run.duration * 1000))} ${f.perUnit}`}
+                leading={entry.run.workoutType ? <EffortMark type={entry.run.workoutType} size={12} /> : <View style={{ width: 12, height: 12, borderRadius: 3, backgroundColor: theme.separator }} />}
+                onPress={() => router.push({ pathname: "/runs/[id]", params: { id: entry.run.id } })}
+              />
+            ) : (
+              <Row
+                title={l(entry.session.name)}
+                subtitle={`${f.dateTime(entry.session.startedAt)} · ${formatDuration(sessionStats(entry.session).duration)} · ${sessionStats(entry.session).doneSets} ${t.training.setsDone.toLowerCase()}`}
+                leading={<Icon name="strength" size={14} color={theme.textMuted} />}
+                onPress={() => router.push({ pathname: "/sessions/[id]", params: { id: entry.session.id } })}
+              />
+            )}
           </View>
         );
       }}

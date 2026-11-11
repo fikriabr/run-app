@@ -22,6 +22,10 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Icon sf="calendar" md="calendar_month" />
         <NativeTabs.Trigger.Label>{t.tabs.plan}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="training">
+        <NativeTabs.Trigger.Icon sf="dumbbell" md="fitness_center" />
+        <NativeTabs.Trigger.Label>{t.tabs.train}</NativeTabs.Trigger.Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="activity">
         <NativeTabs.Trigger.Icon sf="figure.run" md="directions_run" />
         <NativeTabs.Trigger.Label>{t.tabs.activity}</NativeTabs.Trigger.Label>

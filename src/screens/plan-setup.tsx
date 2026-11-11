@@ -47,6 +47,7 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
   const [weekly, setWeekly] = useState(toUnits(existing ? existing.input.weeklyDistance : LEVEL_WEEKLY_KM.casual * 1000));
   const [runDays, setRunDays] = useState<number[]>(existing?.input.runDays ?? [1, 3, 6]);
   const [longDay, setLongDay] = useState(existing?.input.longRunDay ?? 6);
+  const [strengthPerWeek, setStrengthPerWeek] = useState(existing?.input.strengthPerWeek ?? 1);
   const thisMonday = mondayOf(today);
   const lateInWeek = today >= addDays(thisMonday, 4);
   const [startNext, setStartNext] = useState(lateInWeek);
@@ -92,6 +93,7 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
         startDate: startMonday,
         vdot,
         weeklyDistance: weekly * unitMeters(f.units),
+        strengthPerWeek,
       },
       startNext ? undefined : today,
     );
@@ -252,6 +254,18 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
             </ChipRow>
           </View>
         ) : null}
+      </View>
+
+      <View style={{ gap: space.m }}>
+        <Txt variant="title" accessibilityRole="header">
+          {t.training.strengthPerWeek}
+        </Txt>
+        <Txt muted>{t.training.strengthHint}</Txt>
+        <ChipRow>
+          {[0, 1, 2].map((n) => (
+            <Chip key={n} label={n === 0 ? t.training.strengthNone : String(n)} selected={strengthPerWeek === n} onPress={() => setStrengthPerWeek(n)} />
+          ))}
+        </ChipRow>
       </View>
 
       <View style={{ gap: space.m }}>

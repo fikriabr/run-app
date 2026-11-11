@@ -58,6 +58,12 @@ export default function RootLayout() {
           />
           <Stack.Screen name="runs/[id]" options={{ title: "" }} />
           <Stack.Screen name="settings" options={{ title: t.settings.title }} />
+          <Stack.Screen name="exercises/index" options={{ title: t.training.library }} />
+          <Stack.Screen name="exercises/[id]" options={{ title: "" }} />
+          <Stack.Screen name="routines/[id]" options={{ title: "" }} />
+          <Stack.Screen name="routine-edit" options={{ presentation: "modal", title: t.training.builderTitle }} />
+          <Stack.Screen name="session" options={{ title: "" }} />
+          <Stack.Screen name="sessions/[id]" options={{ title: t.training.summary }} />
         </Stack.Protected>
         <Stack.Protected guard={!hasPlan}>
           <Stack.Screen name="onboarding" options={{ title: t.onboarding.title, headerLargeTitleEnabled: true }} />

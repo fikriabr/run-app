@@ -47,7 +47,7 @@ Numbers always use `tabular-nums` so a ticking clock does not jitter.
 
 ## Layout
 
-- Native tab bar (iOS liquid glass, Android Material 3) with four destinations: Today, Plan, Activity, You. Running itself is a full-screen modal, because nothing else should be reachable mid-run except pause and finish.
+- Native tab bar (iOS liquid glass, Android Material 3) with five destinations: Today, Plan, Train, Activity, You. Running itself is a full-screen modal, because nothing else should be reachable mid-run except pause and finish.
 - Stack headers with large titles on iOS, provided by the navigator, never hand-built.
 - Spacing scale: 4 / 8 / 12 / 20 / 32. Row gap 8, group gap 20, section gap 32.
 - Radius: 14 on grouped sections, 10 on buttons, 3 on lane blocks. Lane blocks stay nearly square because they are data, not decoration.
@@ -56,6 +56,13 @@ Numbers always use `tabular-nums` so a ticking clock does not jitter.
 ## Icons
 
 SF Symbols on iOS, Material Symbols on Android and web, through `expo-symbols`. Reason: each platform's own icon family reads as native; a third-party set would look foreign on both.
+
+## Training (strength, yoga, mobility)
+
+- Same lane motif: a small block marks each routine and exercise, track red for strength and plyometrics (load), field green for core, yoga, diastasis recti and mobility (control).
+- The set logger is a dense table on purpose: set number, previous result, load, reps or seconds, and a 44 pt tick. A ticked row turns `fieldSoft` so progress through a session reads at a glance.
+- The rest timer is the one inverted surface in the app (`text` as background), pinned to the bottom, because it is the only thing that matters between sets.
+- Videos load as a thumbnail and only stream after a tap, so browsing the library does not spend mobile data.
 
 ## Logo and assets
 

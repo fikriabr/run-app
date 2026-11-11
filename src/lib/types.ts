@@ -1,3 +1,5 @@
+import type { StrengthSlot } from "./training-types";
+
 export type Units = "km" | "mi";
 export type Language = "system" | "en" | "id";
 export type ThemePreference = "system" | "light" | "dark";
@@ -68,6 +70,8 @@ export interface PlanInput {
   vdot: number;
   /** Current typical weekly volume in metres. */
   weeklyDistance: number;
+  /** Strength sessions scheduled per week, 0 to 2. */
+  strengthPerWeek?: number;
 }
 
 export interface Plan {
@@ -76,6 +80,7 @@ export interface Plan {
   input: PlanInput;
   weeks: PlanWeek[];
   workouts: Workout[];
+  strength?: StrengthSlot[];
 }
 
 export interface Split {

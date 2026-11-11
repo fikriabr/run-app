@@ -19,3 +19,10 @@ export function useT(): Dictionary {
   const pref = useAppStore((s) => s.settings.language);
   return dictionaryFor(resolveLanguage(pref));
 }
+
+/** Picks the current language's text out of a bilingual value. */
+export function useLocalized(): (value: { en: string; id: string }) => string {
+  const pref = useAppStore((s) => s.settings.language);
+  const lang = resolveLanguage(pref);
+  return (value) => value[lang];
+}

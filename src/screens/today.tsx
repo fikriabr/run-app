@@ -7,7 +7,11 @@ import { Row, Section, SectionTitle } from "@/components/section";
 import { Num, Txt } from "@/components/text";
 import { useFormat } from "@/hooks/use-format";
 import { useToday } from "@/hooks/use-today";
-import { useT } from "@/i18n";
+import { useLocalized, useT } from "@/i18n";
+import { EXERCISE_MAP } from "@/data/exercises";
+import { routineDuration } from "@/lib/training";
+import { findRoutine, useTrainingStore } from "@/store/training-store";
+import { useStartRoutine } from "./training-shared";
 import { missedWorkouts } from "@/lib/adapt";
 import { addDays, fromDateKey, mondayOf } from "@/lib/dates";
 import type { Workout } from "@/lib/types";
@@ -27,6 +31,9 @@ export function TodayScreen() {
   const hiddenUntil = useAppStore((s) => s.missedPromptHiddenUntil);
   const hideMissedPrompt = useAppStore((s) => s.hideMissedPrompt);
   const setVdot = useAppStore((s) => s.setVdot);
+  const l = useLocalized();
+  const customRoutines = useTrainingStore((s) => s.customRoutines);
+  const startRoutine = useStartRoutine();
 
   if (!plan) return null;
   const goal = plan.input.goal;
@@ -39,6 +46,8 @@ export function TodayScreen() {
   const missed = missedWorkouts(plan, today);
   const showMissed = missed.length >= 2 && !(hiddenUntil && hiddenUntil >= today);
 
+  const strengthSlot = plan.strength?.find((x) => x.date === today && x.status !== "skipped");
+  const strengthRoutine = findRoutine(strengthSlot?.routineId, customRoutines);
   const weekStart = mondayOf(today);
   const weekDays = [0, 1, 2, 3, 4, 5, 6].map((d) => addDays(weekStart, d));
   const weekWorkouts = plan.workouts.filter((w) => w.date >= weekStart && w.date <= weekDays[6]);
@@ -91,6 +100,35 @@ export function TodayScreen() {
           ) : null}
         </View>
       )}
+
+      {strengthSlot && strengthRoutine ? (
+        <View style={{ backgroundColor: theme.surface, borderRadius: radius.section, borderCurve: "continuous", padding: 20, gap: space.m }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
+            <Icon name="strength" size={18} color={theme.track} />
+            <Txt variant="label" color={theme.track}>
+              {strengthSlot.status === "completed" ? t.today.completed : t.training.planned}
+            </Txt>
+          </View>
+          <Txt variant="title">{l(strengthRoutine.name)}</Txt>
+          <Txt muted>
+            {t.training.exercisesCount(strengthRoutine.items.length)} · {t.training.estimate(Math.round(routineDuration(strengthRoutine, EXERCISE_MAP) / 60))}
+          </Txt>
+          {strengthSlot.status === "completed" && strengthSlot.sessionId ? (
+            <Button
+              label={t.training.summary}
+              kind="secondary"
+              onPress={() => router.push({ pathname: "/sessions/[id]", params: { id: strengthSlot.sessionId! } })}
+            />
+          ) : (
+            <Button
+              label={t.training.startRoutine}
+              kind={focus && focus.status === "planned" ? "secondary" : "primary"}
+              icon="strength"
+              onPress={() => void startRoutine(strengthRoutine.id, strengthSlot.id)}
+            />
+          )}
+        </View>
+      ) : null}
 
       <Button label={t.today.freeRun} kind="secondary" icon="run" onPress={() => router.push("/run")} />
 
