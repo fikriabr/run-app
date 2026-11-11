@@ -169,3 +169,13 @@ export function toDisplayWeight(kg: number, unit: "kg" | "lb"): number {
 export function fromDisplayWeight(value: number, unit: "kg" | "lb"): number {
   return unit === "kg" ? value : value * KG_PER_LB;
 }
+
+/** A ticked set beats every earlier session: heavier, or more reps at bodyweight, or a longer hold. Needs history to compare against. */
+export function isPersonalBest(set: LoggedSet, bests: ExerciseBests): boolean {
+  if (!set.done || bests.sessions === 0) return false;
+  if (set.weight && set.weight > (bests.heaviest ?? 0)) return true;
+  if (!set.weight && set.reps && bests.heaviest == null && set.reps > (bests.mostReps ?? 0)) return true;
+  if (set.seconds && set.seconds > (bests.longestHold ?? 0)) return true;
+  return false;
+}
+

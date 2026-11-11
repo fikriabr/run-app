@@ -65,6 +65,10 @@ SF Symbols on iOS, Material Symbols on Android and web, through `expo-symbols`. 
 - The set logger is a dense table on purpose: set number, previous result, load, reps or seconds, and a 44 pt tick. A ticked row turns `primarySoft` so progress through a session reads at a glance.
 - The rest timer is the one inverted surface in the app (`text` as background), pinned to the bottom, because it is the only thing that matters between sets.
 - Videos load as a thumbnail and only stream after a tap, so browsing the library does not spend mobile data.
+- A workout has two levels, following the owner's Caliber screenshots: an overview (tabs Exercises / Overview / Notes) of cards with a thumbnail, the name, a "3 sets × 10 reps" pill and a ••• menu; and a per-exercise track screen (tabs Track / How to / History) with the video edge to edge, the title card overlapping it, and one card per set.
+- Thumbnails are frames from each exercise's own tutorial video, not drawn muscle diagrams: no illustration set has been commissioned, and a real frame shows the movement. Offline they fall back to a navy tile.
+- Each set card has a round check showing the set number, kg and reps boxes with the unit inside, and "Last: …" from the previous session underneath. "Complete exercise" ticks every filled set and moves to the next unfinished exercise.
+- A yellow "New best" tag appears only when a ticked set beats every earlier session (heavier, more bodyweight reps, or a longer hold). It is computed, never decorative.
 
 ## Logo and assets
 

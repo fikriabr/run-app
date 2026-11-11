@@ -1,8 +1,10 @@
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View, type ViewStyle } from "react-native";
+import { ExerciseThumb } from "@/components/exercise-thumb";
+import { Icon } from "@/components/icon";
 import { EmptyState } from "@/components/banner";
 import { Button } from "@/components/button";
-import { Row, Section, SectionTitle } from "@/components/section";
+import { SectionTitle } from "@/components/section";
 import { Txt } from "@/components/text";
 import { EXERCISE_MAP } from "@/data/exercises";
 import { useLocalized, useT } from "@/i18n";
@@ -10,7 +12,7 @@ import { routineDuration } from "@/lib/training";
 import { useRoutineDraft } from "@/store/routine-draft";
 import { findRoutine, newTrainingId, useTrainingStore } from "@/store/training-store";
 import { confirm } from "@/services/confirm";
-import { screenContent, space } from "@/theme";
+import { radius, screenContent, space, useTheme } from "@/theme";
 import { CategoryMark, useStartRoutine, useTargetText } from "./training-shared";
 
 export function RoutineDetailScreen() {
@@ -21,6 +23,7 @@ export function RoutineDetailScreen() {
   const deleteRoutine = useTrainingStore((s) => s.deleteRoutine);
   const startRoutine = useStartRoutine();
   const targetText = useTargetText();
+  const theme = useTheme();
   const routine = findRoutine(id, custom);
 
   if (!routine) return <EmptyState icon="missed" title={t.common.errorTitle} body={t.training.sessionNotFound} />;
@@ -57,21 +60,31 @@ export function RoutineDetailScreen() {
 
       <View style={{ gap: space.m }}>
         <SectionTitle>{t.training.exercisesCount(routine.items.length)}</SectionTitle>
-        <Section>
-          {routine.items.map((item, i) => {
-            const ex = EXERCISE_MAP[item.exerciseId];
-            if (!ex) return null;
-            return (
-              <Row
-                key={`${item.exerciseId}-${i}`}
-                title={l(ex.name)}
-                subtitle={`${targetText(ex, item)}${item.restSeconds > 0 ? ` · ${t.training.rest(item.restSeconds)}` : ""}`}
-                leading={<CategoryMark category={ex.category} size={10} />}
-                onPress={() => router.push({ pathname: "/exercises/[id]", params: { id: ex.id } })}
-              />
-            );
-          })}
-        </Section>
+        {routine.items.map((item, i) => {
+          const ex = EXERCISE_MAP[item.exerciseId];
+          if (!ex) return null;
+          return (
+            <Pressable
+              key={`${item.exerciseId}-${i}`}
+              onPress={() => router.push({ pathname: "/exercises/[id]", params: { id: ex.id } })}
+              accessibilityRole="button"
+              style={({ pressed }) =>
+                ({ flexDirection: "row", alignItems: "center", gap: space.m, padding: 16, borderRadius: radius.card, backgroundColor: pressed ? theme.surfaceAlt : theme.surface, cursor: "pointer" }) as ViewStyle
+              }
+            >
+              <ExerciseThumb exercise={ex} />
+              <View style={{ flex: 1, gap: space.s, alignItems: "flex-start" }}>
+                <Txt variant="heading" style={{ fontSize: 18, lineHeight: 23 }}>
+                  {l(ex.name)}
+                </Txt>
+                <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, backgroundColor: theme.surfaceAlt }}>
+                  <Txt variant="label">{targetText(ex, item)}</Txt>
+                </View>
+              </View>
+              <Icon name="chevron" size={14} color={theme.primary} />
+            </Pressable>
+          );
+        })}
       </View>
 
       <View style={{ gap: space.s }}>

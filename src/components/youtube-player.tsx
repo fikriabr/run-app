@@ -7,7 +7,7 @@ import { Txt } from "./text";
 import { VideoFrame } from "./video-frame";
 
 /** Shows the thumbnail until tapped, so opening an exercise never starts a download on its own. */
-export function YouTubePlayer({ videoId, title, playLabel }: { videoId: string; title: string; playLabel: string }) {
+export function YouTubePlayer({ videoId, title, playLabel, edge }: { videoId: string; title: string; playLabel: string; edge?: boolean }) {
   const theme = useTheme();
   const [playing, setPlaying] = useState(false);
   const [thumbFailed, setThumbFailed] = useState(false);
@@ -18,7 +18,7 @@ export function YouTubePlayer({ videoId, title, playLabel }: { videoId: string; 
   }, [videoId]);
 
   return (
-    <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: radius.section, borderCurve: "continuous", overflow: "hidden", backgroundColor: theme.surfaceAlt }}>
+    <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: edge ? 0 : radius.section, borderCurve: "continuous", overflow: "hidden", backgroundColor: theme.navy }}>
       {playing ? (
         <VideoFrame videoId={videoId} title={title} />
       ) : (
@@ -37,8 +37,8 @@ export function YouTubePlayer({ videoId, title, playLabel }: { videoId: string; 
               accessible={false}
             />
           ) : (
-            <View style={{ position: "absolute", left: 16, right: 16, bottom: 12 }}>
-              <Txt variant="caption" muted numberOfLines={2}>
+            <View style={{ position: "absolute", left: 16, right: 16, ...(edge ? { top: 12 } : { bottom: 12 }) }}>
+              <Txt variant="caption" color={theme.navyMuted} numberOfLines={2}>
                 {title}
               </Txt>
             </View>

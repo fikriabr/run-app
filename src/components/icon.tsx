@@ -32,6 +32,8 @@ const ICONS = {
   route: ["point.topleft.down.to.point.bottomright.curvepath", "route"],
   book: ["book", "menu_book"],
   tick: ["checkmark", "check"],
+  more: ["ellipsis", "more_horiz"],
+  history: ["clock.arrow.circlepath", "history"],
   strength: ["dumbbell", "fitness_center"],
   video: ["play.rectangle", "smart_display"],
   search: ["magnifyingglass", "search"],

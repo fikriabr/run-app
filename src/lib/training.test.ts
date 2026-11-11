@@ -9,6 +9,7 @@ import {
   exerciseBests,
   exerciseHistory,
   fromDisplayWeight,
+  isPersonalBest,
   parseYouTubeId,
   previousSets,
   routineDuration,
@@ -170,5 +171,22 @@ describe("scheduleStrength", () => {
     for (const s of slots) {
       if (plan.weeks[s.week].phase === "taper") expect(s.routineId).toBe("hip-stability");
     }
+  });
+});
+
+describe("isPersonalBest", () => {
+  const history = [finished("a", 1, [["goblet-squat", [{ reps: 10, weight: 14 }]], ["push-up", [{ reps: 12 }]], ["plank", [{ seconds: 45 }]]])];
+  const done = (x: Partial<{ reps: number; weight: number; seconds: number }>) => ({ reps: x.reps ?? null, weight: x.weight ?? null, seconds: x.seconds ?? null, done: true });
+
+  it("flags heavier sets, more bodyweight reps and longer holds", () => {
+    expect(isPersonalBest(done({ reps: 8, weight: 16 }), exerciseBests(history, "goblet-squat"))).toBe(true);
+    expect(isPersonalBest(done({ reps: 12, weight: 14 }), exerciseBests(history, "goblet-squat"))).toBe(false);
+    expect(isPersonalBest(done({ reps: 13 }), exerciseBests(history, "push-up"))).toBe(true);
+    expect(isPersonalBest(done({ seconds: 50 }), exerciseBests(history, "plank"))).toBe(true);
+  });
+
+  it("never flags a first-ever session or an unticked set", () => {
+    expect(isPersonalBest(done({ reps: 20 }), exerciseBests(history, "squat"))).toBe(false);
+    expect(isPersonalBest({ ...done({ reps: 8, weight: 30 }), done: false }, exerciseBests(history, "goblet-squat"))).toBe(false);
   });
 });

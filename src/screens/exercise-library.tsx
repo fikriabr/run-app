@@ -10,7 +10,7 @@ import type { ExerciseCategory } from "@/lib/training-types";
 import { useActiveSession } from "@/store/training-store";
 import { useRoutineDraft } from "@/store/routine-draft";
 import { radius, screenContent, space, useTheme, fonts } from "@/theme";
-import { CategoryMark } from "./training-shared";
+import { ExerciseThumb } from "@/components/exercise-thumb";
 
 const CATEGORIES: ExerciseCategory[] = ["strength", "core", "plyometric", "yoga", "diastasis", "mobility"];
 
@@ -93,7 +93,7 @@ export function ExerciseLibraryScreen() {
             <Row
               title={l(item.name)}
               subtitle={`${t.training.category[item.category]} · ${item.muscles.slice(0, 3).map((m) => t.training.muscle[m]).join(", ")}`}
-              leading={<CategoryMark category={item.category} />}
+              leading={<ExerciseThumb exercise={item} size={52} />}
               onPress={() => choose(item.id)}
             />
           </View>

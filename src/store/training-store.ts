@@ -35,6 +35,10 @@ interface ActiveState {
   moveExercise: (ex: number, dir: -1 | 1) => void;
   adjustRest: (seconds: number) => void;
   clearRest: () => void;
+  startRest: (seconds: number, now: number) => void;
+  setNote: (note: string) => void;
+  /** Ticks every set that has a value logged; returns how many were ticked. */
+  completeExercise: (ex: number, now: number) => number;
 }
 
 function newId(prefix: string): string {
@@ -112,6 +116,29 @@ export const useActiveSession = create<ActiveState>()(
         adjustRest: (seconds) =>
           set((s) => (s.restEndsAt ? { restEndsAt: s.restEndsAt + seconds * 1000, restTotal: Math.max(1, s.restTotal + seconds) } : {})),
         clearRest: () => set({ restEndsAt: null, restTotal: 0 }),
+        startRest: (seconds, now) => set({ restEndsAt: now + seconds * 1000, restTotal: seconds }),
+        setNote: (note) => set((s) => (s.active ? { active: { ...s.active, note } } : {})),
+        completeExercise: (ex, now) => {
+          let ticked = 0;
+          set((s) => {
+            if (!s.active) return {};
+            const exercise = s.active.exercises[ex];
+            if (!exercise) return {};
+            const sets = exercise.sets.map((x) => {
+              const hasValue = (x.reps ?? 0) > 0 || (x.seconds ?? 0) > 0;
+              if (!x.done && hasValue) ticked++;
+              return hasValue ? { ...x, done: true } : x;
+            });
+            const exercises = s.active.exercises.map((e, k) => (k === ex ? { ...e, sets } : e));
+            const rest = ticked > 0 && exercise.restSeconds > 0;
+            return {
+              active: { ...s.active, exercises },
+              restEndsAt: rest ? now + exercise.restSeconds * 1000 : s.restEndsAt,
+              restTotal: rest ? exercise.restSeconds : s.restTotal,
+            };
+          });
+          return ticked;
+        },
       };
     },
     { name: "langkah-active-session", version: 1, storage: createJSONStorage(() => persistStorage) },
