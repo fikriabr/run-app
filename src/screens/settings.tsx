@@ -79,6 +79,24 @@ export function SettingsScreen() {
         {toggle(t.settings.splitCues, "splitCues", undefined, !settings.voice)}
         {toggle(t.settings.paceCues, "paceCues", undefined, !settings.voice)}
       </Section>
+      <Section>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: space.m, paddingHorizontal: 16, paddingVertical: 12, minHeight: 52 }}>
+          <View style={{ flex: 1, gap: 2 }}>
+            <Txt nativeID="setting-autoplay">{t.settings.autoplayVideo}</Txt>
+            <Txt variant="caption" muted>
+              {t.settings.autoplayVideoHint}
+            </Txt>
+          </View>
+          <Switch
+            value={settings.autoplayVideo !== false}
+            onValueChange={(v) => update({ autoplayVideo: v })}
+            accessibilityLabelledBy="setting-autoplay"
+            aria-label={t.settings.autoplayVideo}
+            trackColor={{ true: theme.primary, false: theme.separator }}
+            thumbColor={process.env.EXPO_OS === "android" ? theme.surface : undefined}
+          />
+        </View>
+      </Section>
       <View style={{ gap: space.m }}>
         <SectionTitle>{t.settings.data}</SectionTitle>
         <Button label={t.settings.reset} kind="danger" icon="trash" onPress={() => void reset()} />

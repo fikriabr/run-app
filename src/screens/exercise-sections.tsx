@@ -173,7 +173,7 @@ export function ExerciseHero({ exercise, subtitle, children }: { exercise: Exerc
   return (
     <View>
       {video ? (
-        <YouTubePlayer videoId={video.id} title={video.title} playLabel={t.training.playVideo(name)} edge />
+        <YouTubePlayer videoId={video.id} title={video.title} playLabel={t.training.playVideo(name)} edge ambient />
       ) : (
         <View style={{ height: 120, backgroundColor: theme.navy }} />
       )}

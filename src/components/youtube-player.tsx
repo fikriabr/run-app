@@ -1,25 +1,65 @@
 import { Image } from "expo-image";
 import { useEffect, useState } from "react";
 import { Pressable, View, type ViewStyle } from "react-native";
+import { useT } from "@/i18n";
+import { useAppStore } from "@/store/app-store";
 import { radius, useTheme } from "@/theme";
 import { Icon } from "./icon";
 import { Txt } from "./text";
 import { VideoFrame } from "./video-frame";
 
-/** Shows the thumbnail until tapped, so opening an exercise never starts a download on its own. */
-export function YouTubePlayer({ videoId, title, playLabel, edge }: { videoId: string; title: string; playLabel: string; edge?: boolean }) {
+interface YouTubePlayerProps {
+  videoId: string;
+  title: string;
+  playLabel: string;
+  edge?: boolean;
+  /** Start straight away, muted and looping, as a demo of the movement. Follows the autoplay setting. */
+  ambient?: boolean;
+}
+
+export function YouTubePlayer({ videoId, title, playLabel, edge, ambient }: YouTubePlayerProps) {
+  const t = useT();
   const theme = useTheme();
+  const autoplay = useAppStore((s) => s.settings.autoplayVideo !== false);
+  const live = ambient && autoplay;
   const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(true);
   const [thumbFailed, setThumbFailed] = useState(false);
 
   useEffect(() => {
     setPlaying(false);
+    setMuted(true);
     setThumbFailed(false);
   }, [videoId]);
 
   return (
     <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: edge ? 0 : radius.section, borderCurve: "continuous", overflow: "hidden", backgroundColor: theme.navy }}>
-      {playing ? (
+      {live ? (
+        <>
+          <VideoFrame videoId={videoId} title={title} ambient muted={muted} />
+          <Pressable
+            onPress={() => setMuted((m) => !m)}
+            accessibilityRole="button"
+            accessibilityLabel={muted ? t.training.soundOn : t.training.soundOff}
+            style={({ pressed }) =>
+              ({
+                position: "absolute",
+                right: 12,
+                top: 12,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: pressed ? "rgba(14,18,56,0.9)" : "rgba(14,18,56,0.7)",
+                cursor: "pointer",
+              }) as ViewStyle
+            }
+          >
+            <Icon name={muted ? "soundOff" : "soundOn"} size={20} color="#FFFFFF" />
+          </Pressable>
+        </>
+      ) : playing ? (
         <VideoFrame videoId={videoId} title={title} />
       ) : (
         <Pressable

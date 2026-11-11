@@ -15,6 +15,8 @@ export interface Settings {
   voice: boolean;
   splitCues: boolean;
   paceCues: boolean;
+  /** Exercise demo videos start muted and loop; undefined in older saves means on. */
+  autoplayVideo?: boolean;
 }
 
 export type SavedActivity = Activity & { fitnessChange?: Pick<FitnessChange, "from" | "to" | "reason"> };
@@ -47,6 +49,7 @@ const DEFAULT_SETTINGS: Settings = {
   voice: true,
   splitCues: true,
   paceCues: true,
+  autoplayVideo: true,
 };
 
 function newId(prefix: string): string {

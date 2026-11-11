@@ -33,6 +33,8 @@ const ICONS = {
   book: ["book", "menu_book"],
   tick: ["checkmark", "check"],
   more: ["ellipsis", "more_horiz"],
+  soundOn: ["speaker.wave.2.fill", "volume_up"],
+  soundOff: ["speaker.slash.fill", "volume_off"],
   history: ["clock.arrow.circlepath", "history"],
   strength: ["dumbbell", "fitness_center"],
   video: ["play.rectangle", "smart_display"],
