@@ -39,3 +39,17 @@ Docs: https://docs.expo.dev/eas/index.md
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+
+## This project
+
+Langkah is a running-training app: periodised plans, GPS run recording with structured-workout voice coaching, run history and fitness tracking.
+
+- `src/lib/` holds the training logic as plain TypeScript with Vitest tests next to each file (`npm test`). Keep React and Expo imports out of it.
+- `src/screens/` holds screen bodies; `src/app/` only routes.
+- Text lives in `src/i18n/en.ts` and `src/i18n/id.ts`. Every user-facing string goes in both.
+
+## UI work
+
+1. Read `DESIGN.md` for direction (palette, type, the lane-chart motif and the reason behind each choice).
+2. Apply the antislop skills in `.claude/skills/` (`antislop`, `antislop-layoutmobile`, `antislop-human`, `antislop-copywriting`, `antislop-code`) as the filter, in DURING mode, and finish with the antislop Delivery Gate.
+3. Expo's own skills (router, native UI, animation, EAS) come from the `expo` plugin enabled in `.claude/settings.json`.

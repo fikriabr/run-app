@@ -130,7 +130,7 @@ function stridesSession(easyMeters: number): Session {
   return {
     type: "strides",
     steps: [
-      distanceStep("steady", Math.max(3000, easyMeters), "easy"),
+      distanceStep("steady", Math.max(3000, easyMeters - 1000), "easy"),
       ...repeat(6, timeStep("work", 20, "repetition"), timeStep("recover", 60, null)),
     ],
   };
@@ -210,6 +210,44 @@ function racePaceSession(goal: GoalKind, p: number, volume: number, taper: boole
   };
 }
 
+/** Drops the last rep of the largest repeat block; returns null when no block has more than two reps. */
+function dropRep(steps: WorkoutStep[]): WorkoutStep[] | null {
+  const of = Math.max(0, ...steps.map((st) => (st.rep && st.kind === "work" ? st.rep.of : 0)));
+  if (of <= 2) return null;
+  return steps
+    .filter((st) => !st.rep || st.rep.of !== of || !(st.rep.index === of || (st.kind === "recover" && st.rep.index === of - 1)))
+    .map((st) => (st.rep && st.rep.of === of ? { ...st, rep: { index: st.rep.index, of: of - 1 } } : st));
+}
+
+/** Shrinks a session until it fits `cap` metres: fewer reps first, then shorter continuous blocks. */
+export function fitSession(session: Session, cap: number, vdot: number, goal: GoalKind): Session {
+  let steps = session.steps;
+  for (let guard = 0; guard < 20 && workoutDistance({ steps }, vdot, goal) > cap; guard++) {
+    const fewer = dropRep(steps);
+    if (fewer) {
+      steps = fewer;
+      continue;
+    }
+    // Reps cannot drop below two, so shorten every work block instead; warm-ups and recoveries stay.
+    const isFixed = (st: WorkoutStep) => st.kind === "warmup" || st.kind === "cooldown" || st.kind === "recover";
+    const total = workoutDistance({ steps }, vdot, goal);
+    const fixed = workoutDistance({ steps: steps.filter(isFixed) }, vdot, goal);
+    const flexible = total - fixed;
+    if (flexible <= 0) break;
+    const factor = Math.max(0.5, (cap - fixed) / flexible);
+    steps = steps.map((st) => {
+      if (isFixed(st)) return st;
+      const resized =
+        st.measure === "time"
+          ? timeStep(st.kind, Math.max(st.rep ? 60 : 600, Math.round((st.value * factor) / 60) * 60), st.zone)
+          : distanceStep(st.kind, Math.max(st.rep ? 400 : 1000, st.value * factor), st.zone);
+      return st.rep ? { ...resized, rep: st.rep } : resized;
+    });
+    break;
+  }
+  return { ...session, steps };
+}
+
 function qualityFor(
   input: PlanInput,
   shape: WeekShape,
@@ -287,10 +325,14 @@ export function generatePlan(input: PlanInput, options: GenerateOptions): Plan {
     const qualityDays = shape.isRaceWeek ? [] : pickQualityDays(runDays, longDay, qualityCount);
     const easyDays = runDays.filter((d) => d !== longDay && !qualityDays.includes(d));
 
-    const longMeters = Math.min(LONG_MAX_KM[input.goal] * 1000, Math.max(4000, shape.volume * 0.3));
     const roughEasy = shape.volume / Math.max(1, runDays.length);
+    // The long run stays the longest run of the week even when weekly volume is low.
+    const longMeters = Math.min(LONG_MAX_KM[input.goal] * 1000, Math.max(4000, shape.volume * 0.3, roughEasy * 1.3));
     const sessions = new Map<number, Session>();
-    qualityDays.forEach((day, slot) => sessions.set(day, qualityFor(input, shape, slot, w, roughEasy)));
+    const qualityCap = Math.max(5000, shape.volume * (runDays.length <= 3 ? 0.35 : 0.28));
+    qualityDays.forEach((day, slot) =>
+      sessions.set(day, fitSession(qualityFor(input, shape, slot, w, roughEasy), qualityCap, input.vdot, input.goal)),
+    );
 
     if (shape.isRaceWeek && input.goal !== "fitness") {
       let raceDay = longDay;
@@ -303,7 +345,7 @@ export function generatePlan(input: PlanInput, options: GenerateOptions): Plan {
       const before = runDays.filter((d) => d < raceDay);
       const sharpenerDay = before.length >= 2 ? before[before.length - 2] : undefined;
       for (const d of before) {
-        if (d === sharpenerDay) sessions.set(d, racePaceSession(input.goal, 0, shape.volume, true));
+        if (d === sharpenerDay) sessions.set(d, fitSession(racePaceSession(input.goal, 0, shape.volume, true), qualityCap, input.vdot, input.goal));
         else sessions.set(d, easyRun(Math.min(5000, roughEasy), d === before[before.length - 1]));
       }
     } else {
@@ -335,9 +377,4 @@ export function generatePlan(input: PlanInput, options: GenerateOptions): Plan {
   });
 
   return { id: options.planId, createdAt: options.now ?? Date.now(), input: { ...input, runDays, longRunDay: longDay }, weeks, workouts };
-}
-
-/** Number of plan weeks that fit between the start Monday and the race date (inclusive). */
-export function weeksUntil(startMonday: string, raceDate: string): number {
-  return Math.floor(daysBetween(startMonday, raceDate) / 7) + 1;
 }

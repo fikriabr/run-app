@@ -57,6 +57,26 @@ describe("generatePlan", () => {
     for (const l of longs) expect(weekday(l.date)).toBe(6);
   });
 
+  it("keeps the long run as the longest run of each week", () => {
+    for (const p of [plan, generatePlan({ ...base, goal: "half", runDays: [1, 3, 6], weeklyDistance: 12000, weeks: 12 }, { planId: "h" })]) {
+      for (const week of p.weeks.filter((w) => w.phase !== "taper")) {
+        const runs = p.workouts.filter((w) => w.week === week.index);
+        const long = runs.find((w) => w.type === "long")!;
+        const longest = Math.max(...runs.map((w) => workoutDistance(w, base.vdot, base.goal)));
+        expect(workoutDistance(long, base.vdot, base.goal)).toBe(longest);
+      }
+    }
+  });
+
+  it("keeps quality sessions proportional to weekly volume", () => {
+    const low = generatePlan({ ...base, goal: "half", runDays: [1, 3, 6], weeklyDistance: 12000, weeks: 12 }, { planId: "l" });
+    for (const w of low.workouts.filter((x) => isQuality(x.type) && x.type !== "race")) {
+      const week = low.weeks[w.week];
+      // Steps round to 100 m or whole minutes, so allow a little slack.
+      expect(workoutDistance(w, base.vdot, "half")).toBeLessThanOrEqual(Math.max(5000, week.targetDistance * 0.35) * 1.03);
+    }
+  });
+
   it("ends with the race at goal distance and nothing after it", () => {
     const last = plan.workouts[plan.workouts.length - 1];
     expect(last.type).toBe("race");
