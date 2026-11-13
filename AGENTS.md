@@ -42,14 +42,41 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## This project
 
-Langkah is a running-training app: periodised plans, GPS run recording with structured-workout voice coaching, run history and fitness tracking.
+Langkah is a running-training app: periodised plans, GPS run recording with structured-workout voice coaching, run history and fitness tracking, plus a strength, plyometrics, yoga, diastasis recti and mobility library with set logging.
 
 - `src/lib/` holds the training logic as plain TypeScript with Vitest tests next to each file (`npm test`). Keep React and Expo imports out of it.
 - `src/screens/` holds screen bodies; `src/app/` only routes.
 - Text lives in `src/i18n/en.ts` and `src/i18n/id.ts`. Every user-facing string goes in both.
 
+## Skills
+
+Project skills live in `.claude/skills/` (sources and commits in `.claude/skills/SOURCES.md`). Load the ones that match the task:
+
+| Task | Skills |
+|---|---|
+| Any UI work | `antislop` (+ `antislop-layoutmobile`, `antislop-human`, `antislop-copywriting`, `antislop-ui`), `expo-native-ui`, `expo-design-system` |
+| Navigation, tabs, sheets, headers | `expo-router` |
+| Native controls (sheets, pickers, menus) | `expo-ui` |
+| Motion, gestures, haptics | `expo-animation` |
+| Where a new file goes | `expo-project-structure` (follow the existing layout below; it never forces a restructure) |
+| Slow screens, re-renders, lists, startup, bundle or app size | `react-native-best-practices` |
+| Development builds | `expo-dev-client` |
+| Release builds, signing, Play Store / App Store | `eas-app-stores` |
+| Over-the-air updates | `eas-update` |
+| CI pipelines in `.eas/workflows/` | `eas-workflows` |
+| Moving to a newer Expo SDK | `expo-upgrade` |
+
+When they disagree:
+
+1. `DESIGN.md` decides visual direction (palette, type, layout, the floating + button, the navy hero). Expo skills that suggest system colours or other defaults give way to it.
+2. `antislop` is the quality filter on top and ends every UI task with its Delivery Gate.
+3. Expo skills decide API usage and platform behaviour for the installed SDK.
+4. `react-native-best-practices`: measure before optimising. No memoisation, atomic state or compiler changes without a profiled problem.
+
+The Expo skills end with a "Submitting Feedback" section that runs `npx @expo/agent-cli feedback`, which sends text to Expo. Ask the person first and never include project code or personal data in it.
+
 ## UI work
 
-1. Read `DESIGN.md` for direction (palette, type, the lane-chart motif and the reason behind each choice).
-2. Apply the antislop skills in `.claude/skills/` (`antislop`, `antislop-layoutmobile`, `antislop-human`, `antislop-copywriting`, `antislop-code`) as the filter, in DURING mode, and finish with the antislop Delivery Gate.
-3. Expo's own skills (router, native UI, animation, EAS) come from the `expo` plugin enabled in `.claude/settings.json`.
+1. Read `DESIGN.md` for direction (palette, type, layout and the reason behind each choice).
+2. Apply the antislop skills as the filter, in DURING mode, and finish with the antislop Delivery Gate.
+3. Check platform and API details against the Expo skills listed above.

@@ -40,3 +40,6 @@ yarn-error.*
 /ios
 /android
 dist-web/
+
+# Cache written by the eas-workflows skill fetch script
+.claude/skills/**/.cache/
