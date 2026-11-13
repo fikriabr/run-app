@@ -497,6 +497,15 @@ export const en = {
     strengthHint: "Placed away from your long run and hard sessions.",
     strengthNone: "None",
   },
+  crash: {
+    title: "Something broke on this screen",
+    body: "The error below is saved. Share it with the developer so it can be fixed, then try again.",
+    share: "Share error details",
+    retry: "Try again",
+    dismiss: "Dismiss",
+    lastTitle: "The app stopped last time",
+    lastBody: "An error closed the app. Sharing the details helps fix it.",
+  },
   quickStart: {
     title: "Quick start",
     run: "Free run",

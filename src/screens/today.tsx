@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import { setStatusBarStyle } from "expo-status-bar";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Pressable, ScrollView, View, type ViewStyle } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Polygon } from "react-native-svg";
@@ -20,6 +20,8 @@ import { routineDuration } from "@/lib/training";
 import { isQuality, workoutDistance } from "@/lib/workouts";
 import { useAppStore } from "@/store/app-store";
 import { useRunStore } from "@/store/run-store";
+import { clearLastCrash, readLastCrash } from "@/services/crash-log";
+import { Share } from "react-native";
 import { findRoutine, useTrainingStore } from "@/store/training-store";
 import { fonts, radius, screenContent, space, useResolvedScheme, useTheme } from "@/theme";
 import { useStartRoutine } from "./training-shared";
@@ -43,6 +45,7 @@ export function TodayScreen() {
   const startRoutine = useStartRoutine();
   const pendingRun = useRunStore((s) => (s.restored ? s.run : null));
   const pendingWorkoutId = useRunStore((s) => s.workoutId);
+  const [lastCrash, setLastCrash] = useState(() => readLastCrash());
 
   // The navy hero needs light status-bar content while this tab is showing.
   useFocusEffect(
@@ -172,6 +175,30 @@ export function TodayScreen() {
                 />
               ) : null}
             </View>
+
+            {lastCrash ? (
+              <Banner icon="missed" tone="attention" title={t.crash.lastTitle} body={t.crash.lastBody}>
+                <Txt variant="caption" selectable numberOfLines={4}>
+                  {lastCrash.message}
+                </Txt>
+                <View style={{ flexDirection: "row", gap: space.s, flexWrap: "wrap" }}>
+                  <Button
+                    label={t.crash.share}
+                    onPress={() => void Share.share({ message: `${lastCrash.message}\n\n${lastCrash.stack ?? ""}` })}
+                    style={{ flexGrow: 1 }}
+                  />
+                  <Button
+                    label={t.crash.dismiss}
+                    kind="secondary"
+                    onPress={() => {
+                      clearLastCrash();
+                      setLastCrash(null);
+                    }}
+                    style={{ flexGrow: 1 }}
+                  />
+                </View>
+              </Banner>
+            ) : null}
 
             {pendingRun ? (
               <Banner

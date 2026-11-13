@@ -497,6 +497,15 @@ export const id: Dictionary = {
     strengthHint: "Ditempatkan jauh dari lari jauh dan sesi berat.",
     strengthNone: "Tidak ada",
   },
+  crash: {
+    title: "Ada yang rusak di layar ini",
+    body: "Error di bawah sudah tersimpan. Bagikan ke pengembang supaya bisa diperbaiki, lalu coba lagi.",
+    share: "Bagikan detail error",
+    retry: "Coba lagi",
+    dismiss: "Tutup",
+    lastTitle: "App sempat berhenti",
+    lastBody: "Sebuah error menutup app. Membagikan detailnya membantu perbaikan.",
+  },
   quickStart: {
     title: "Mulai cepat",
     run: "Lari bebas",

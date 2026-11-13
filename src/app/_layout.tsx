@@ -11,12 +11,14 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "expo-router/react-naviga
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Appearance } from "react-native";
 import { useT } from "@/i18n";
 import { useStackOptions } from "@/hooks/use-stack-options";
 import { useAppStore } from "@/store/app-store";
 import { useResolvedScheme, useTheme } from "@/theme";
+
+export { CrashScreen as ErrorBoundary } from "@/screens/crash-screen";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -30,11 +32,20 @@ export default function RootLayout() {
   const stackOptions = useStackOptions();
   const ready = fontsLoaded || fontError != null;
 
+  // Native chrome (alerts, pickers, keyboards) follows the in-app theme choice. On Android this
+  // changes AppCompat night mode, which can recreate the activity, so it only runs when the
+  // choice differs from what is already applied, never for the default at launch.
+  const appliedTheme = useRef<string>("system");
   useEffect(() => {
-    // Native chrome (alerts, pickers, keyboards) follows the in-app theme choice.
-    if (process.env.EXPO_OS !== "web") Appearance.setColorScheme(themePref === "system" ? "unspecified" : themePref);
+    if (process.env.EXPO_OS !== "web" && appliedTheme.current !== themePref) {
+      Appearance.setColorScheme(themePref === "system" ? "unspecified" : themePref);
+      appliedTheme.current = themePref;
+    }
+  }, [themePref]);
+
+  useEffect(() => {
     void SystemUI.setBackgroundColorAsync(theme.bg);
-  }, [themePref, theme.bg]);
+  }, [theme.bg]);
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();
