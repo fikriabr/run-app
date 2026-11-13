@@ -68,8 +68,12 @@ const config: ExpoConfig = {
   experiments: {
     typedRoutes: true,
   },
+  owner: "fikriabr96",
   extra: {
     hasAndroidMapsKey: Boolean(androidMapsKey),
+    eas: {
+      projectId: "0997d7d9-8d43-4c3e-9c18-447a9dbae2ae",
+    },
   },
 };
 
