@@ -58,6 +58,14 @@ export async function checkPermission(): Promise<boolean> {
 export async function startTracking(notification: { title: string; body: string; color: string }): Promise<void> {
   await stopTracking();
   const { setGps } = useRunStore.getState();
+  try {
+    if (!(await Location.hasServicesEnabledAsync())) {
+      setGps({ error: "servicesOff" });
+      return;
+    }
+  } catch {
+    // Not every platform can answer; carry on and let the watcher report problems.
+  }
   const options: Location.LocationOptions = {
     accuracy: Location.Accuracy.BestForNavigation,
     timeInterval: 1000,
@@ -90,7 +98,7 @@ export async function startTracking(notification: { title: string; body: string;
   }
 
   watcher = await Location.watchPositionAsync(options, (loc) => handleLocations([loc]));
-  setGps({ background: false });
+  setGps({ background: false, error: null });
 }
 
 export async function stopTracking(): Promise<void> {

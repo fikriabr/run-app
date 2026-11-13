@@ -1,4 +1,4 @@
-import { createElement, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { VideoFrameProps } from "./video-frame";
 import { embedUrl, playerCommand } from "./youtube-url";
 
@@ -39,7 +39,6 @@ export function VideoFrame({ videoId, title, ambient, muted = true, start = 0, e
 
   useEffect(() => {
     if (!ambient) return;
-    setUseFallback(false);
     let cancelled = false;
     let timer: ReturnType<typeof setInterval> | undefined;
     const loopBack = () => {
@@ -79,20 +78,27 @@ export function VideoFrame({ videoId, title, ambient, muted = true, start = 0, e
 
   useEffect(() => {
     if (!ambient) return;
-    if (player.current) muted ? player.current.mute() : player.current.unMute();
-    else frame.current?.contentWindow?.postMessage(playerCommand(muted ? "mute" : "unMute"), "*");
+    const p = player.current;
+    if (p) {
+      if (muted) p.mute();
+      else p.unMute();
+    } else {
+      frame.current?.contentWindow?.postMessage(playerCommand(muted ? "mute" : "unMute"), "*");
+    }
   }, [ambient, muted]);
 
   if (useFallback) {
-    return createElement("iframe", {
-      ref: frame,
-      src: embedUrl(videoId, { ambient, start, end }),
-      title,
-      allow: "autoplay; encrypted-media; picture-in-picture; fullscreen",
-      allowFullScreen: true,
-      referrerPolicy: "strict-origin-when-cross-origin",
-      style: { border: 0, width: "100%", height: "100%", pointerEvents: ambient ? "none" : "auto" },
-    });
+    return (
+      <iframe
+        ref={frame}
+        src={embedUrl(videoId, { ambient, start, end })}
+        title={title}
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+        allowFullScreen
+        referrerPolicy="strict-origin-when-cross-origin"
+        style={{ border: 0, width: "100%", height: "100%", pointerEvents: ambient ? "none" : "auto" }}
+      />
+    );
   }
-  return createElement("div", { ref: host, title, style: { width: "100%", height: "100%", pointerEvents: "none" } });
+  return <div ref={host} title={title} style={{ width: "100%", height: "100%", pointerEvents: "none" }} />;
 }

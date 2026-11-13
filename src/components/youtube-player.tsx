@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Pressable, View, type ViewStyle } from "react-native";
 import { useT } from "@/i18n";
 import { useAppStore } from "@/store/app-store";
@@ -20,7 +20,12 @@ interface YouTubePlayerProps {
   end?: number;
 }
 
-export function YouTubePlayer({ videoId, title, playLabel, edge, ambient, start, end }: YouTubePlayerProps) {
+export function YouTubePlayer(props: YouTubePlayerProps) {
+  // Keyed by video so switching exercises resets playback, mute and thumbnail state.
+  return <PlayerBody key={props.videoId} {...props} />;
+}
+
+function PlayerBody({ videoId, title, playLabel, edge, ambient, start, end }: YouTubePlayerProps) {
   const t = useT();
   const theme = useTheme();
   const autoplay = useAppStore((s) => s.settings.autoplayVideo !== false);
@@ -28,12 +33,6 @@ export function YouTubePlayer({ videoId, title, playLabel, edge, ambient, start,
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [thumbFailed, setThumbFailed] = useState(false);
-
-  useEffect(() => {
-    setPlaying(false);
-    setMuted(true);
-    setThumbFailed(false);
-  }, [videoId]);
 
   return (
     <View style={{ width: "100%", aspectRatio: 16 / 9, borderRadius: edge ? 0 : radius.section, borderCurve: "continuous", overflow: "hidden", backgroundColor: theme.navy }}>

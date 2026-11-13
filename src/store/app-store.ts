@@ -152,6 +152,9 @@ export const useAppStore = create<AppState>()(
       },
 
       deleteActivity: (id) => {
+        // Undo the fitness change this run caused, unless a newer change has replaced it.
+        const change = get().activities.find((a) => a.id === id)?.fitnessChange;
+        if (change && get().vdot === change.to) get().setVdot(change.from, "runDeleted");
         deleteRoute(id);
         set((s) => ({
           activities: s.activities.filter((a) => a.id !== id),

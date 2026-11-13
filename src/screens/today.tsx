@@ -19,6 +19,7 @@ import { addDays, fromDateKey, mondayOf } from "@/lib/dates";
 import { routineDuration } from "@/lib/training";
 import { isQuality, workoutDistance } from "@/lib/workouts";
 import { useAppStore } from "@/store/app-store";
+import { useRunStore } from "@/store/run-store";
 import { findRoutine, useTrainingStore } from "@/store/training-store";
 import { fonts, radius, screenContent, space, useResolvedScheme, useTheme } from "@/theme";
 import { useStartRoutine } from "./training-shared";
@@ -40,6 +41,8 @@ export function TodayScreen() {
   const setVdot = useAppStore((s) => s.setVdot);
   const customRoutines = useTrainingStore((s) => s.customRoutines);
   const startRoutine = useStartRoutine();
+  const pendingRun = useRunStore((s) => (s.restored ? s.run : null));
+  const pendingWorkoutId = useRunStore((s) => s.workoutId);
 
   // The navy hero needs light status-bar content while this tab is showing.
   useFocusEffect(
@@ -169,6 +172,29 @@ export function TodayScreen() {
                 />
               ) : null}
             </View>
+
+            {pendingRun ? (
+              <Banner
+                icon="run"
+                tone="attention"
+                title={t.today.unfinishedTitle}
+                body={t.today.unfinishedBody(f.distanceWithUnit(pendingRun.distance, 2))}
+              >
+                <View style={{ flexDirection: "row", gap: space.s, flexWrap: "wrap" }}>
+                  {pendingRun.status === "finished" ? (
+                    <Button label={t.save.save} onPress={() => router.push("/run-save")} style={{ flexGrow: 1 }} />
+                  ) : (
+                    <Button
+                      label={t.today.unfinishedResume}
+                      icon="play"
+                      onPress={() => router.push(pendingWorkoutId ? { pathname: "/run", params: { workoutId: pendingWorkoutId } } : "/run")}
+                      style={{ flexGrow: 1 }}
+                    />
+                  )}
+                  <Button label={t.run.discard} kind="secondary" onPress={() => useRunStore.getState().clear()} style={{ flexGrow: 1 }} />
+                </View>
+              </Banner>
+            ) : null}
 
             {showMissed ? (
               <Banner icon="missed" tone="attention" title={t.today.missedTitle(missed.length)} body={t.today.missedBody}>

@@ -124,5 +124,5 @@ export interface FitnessChange {
   at: number;
   from: number;
   to: number;
-  reason: "setup" | "manual" | "harder" | "easier" | "fasterThanTarget" | "missedWorkouts";
+  reason: "setup" | "manual" | "harder" | "easier" | "fasterThanTarget" | "missedWorkouts" | "runDeleted";
 }

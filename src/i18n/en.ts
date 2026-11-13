@@ -146,6 +146,9 @@ export const en = {
     planDoneHint: "Nice work. Start a new plan when you are ready for the next block.",
     newPlan: "Start a new plan",
     notStarted: (date: string) => `Your plan starts on ${date}.`,
+    unfinishedTitle: "Unfinished run",
+    unfinishedBody: (distance: string) => `The app closed during a run (${distance} so far). Pick up where you left off, or discard it.`,
+    unfinishedResume: "Continue run",
   },
   plan: {
     title: "Plan",
@@ -174,6 +177,10 @@ export const en = {
   },
   run: {
     gpsSearching: "Finding GPS signal",
+    gpsOffTitle: "Location is turned off",
+    gpsOffBody: "Turn on location services in your phone settings, then try again.",
+    gpsErrorTitle: "Cannot read GPS",
+    gpsErrorBody: "The phone did not return a location. Check that location is on and try again.",
     gpsReady: "GPS ready",
     gpsWeak: (m: number) => `Weak GPS signal (±${m} m)`,
     permissionTitle: "Location access needed",
@@ -294,6 +301,7 @@ export const en = {
       easier: "Runs felt easier than planned",
       fasterThanTarget: "Ran faster than target",
       missedWorkouts: "Eased after missed runs",
+      runDeleted: "Undone after a run was deleted",
     },
   },
   fitness: {

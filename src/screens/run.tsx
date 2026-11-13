@@ -33,7 +33,7 @@ export function RunScreen() {
   const run = useRunStore((s) => s.run);
   const gps = useRunStore((s) => s.gps);
   const dispatch = useRunStore((s) => s.dispatch);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const [view, setView] = useState<"metrics" | "map">("metrics");
   const workout = workoutId ? plan?.workouts.find((w) => w.id === workoutId) : undefined;
   const goal = plan?.input.goal ?? "10k";
@@ -41,7 +41,9 @@ export function RunScreen() {
 
   const coachOptions: CoachOptions = { t, units: f.units, vdot, goal, voice: settings.voice, splitCues: settings.splitCues, paceCues: settings.paceCues };
   const coach = useRef(coachOptions);
-  coach.current = coachOptions;
+  useEffect(() => {
+    coach.current = coachOptions;
+  });
 
   const beginTracking = async (ask: boolean) => {
     const granted = (await checkPermission()) || (ask && (await requestPermission()));
@@ -132,6 +134,10 @@ export function RunScreen() {
   const gpsLabel =
     gps.permission === "denied"
       ? t.run.permissionTitle
+      : gps.error === "servicesOff"
+        ? t.run.gpsOffTitle
+        : gps.error
+          ? t.run.gpsErrorTitle
       : gps.accuracy == null
         ? t.run.gpsSearching
         : gps.accuracy > 25
@@ -168,6 +174,16 @@ export function RunScreen() {
 
       <ScrollView contentContainerStyle={{ padding: 16, gap: space.l, flexGrow: 1 }}>
         <Txt variant="title">{workout ? t.workout[workout.type] : t.run.freeRun}</Txt>
+
+        {gps.permission !== "denied" && gps.error ? (
+          <View style={{ backgroundColor: theme.accentSoft, borderRadius: radius.section, padding: 16, gap: space.m }}>
+            <Txt variant="heading" color={theme.accentText}>
+              {gps.error === "servicesOff" ? t.run.gpsOffTitle : t.run.gpsErrorTitle}
+            </Txt>
+            <Txt>{gps.error === "servicesOff" ? t.run.gpsOffBody : t.run.gpsErrorBody}</Txt>
+            <Button label={t.common.retry} onPress={() => void beginTracking(true)} />
+          </View>
+        ) : null}
 
         {gps.permission === "denied" ? (
           <View style={{ backgroundColor: theme.accentSoft, borderRadius: radius.section, padding: 16, gap: space.m }}>

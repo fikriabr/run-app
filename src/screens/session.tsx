@@ -31,7 +31,7 @@ export function SessionScreen() {
   const theme = useTheme();
   const active = useActiveSession((s) => s.active);
   const [tab, setTab] = useState<Tab>("exercises");
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Fix } from "./geo";
-import { createRun, currentPace, movingMs, runReducer, type RunState, toActivity } from "./run-engine";
+import { createRun, currentPace, movingMs, runReducer, type RunState, suspendRun, toActivity } from "./run-engine";
 import { distanceStep, timeStep } from "./workouts";
 
 // About 0.0000898 degrees of latitude per 10 m.
@@ -88,5 +88,28 @@ describe("run engine", () => {
     s = runReducer(s, { type: "fix", fix: fixAt(0, 0) });
     [s] = runAtPace(s, 0, 600, 0, 200);
     expect(s.cues.some((c) => c.type === "slowDown")).toBe(true);
+  });
+});
+
+describe("suspendRun", () => {
+  it("stops moving time at the snapshot and keeps distance", () => {
+    let s = runReducer(createRun({ steps: [], vdot: 45, goal: "10k", splitUnit: 1000 }), { type: "start", now: 0 });
+    s = runReducer(s, { type: "fix", fix: fixAt(0, 0) });
+    s = runReducer(s, { type: "fix", fix: fixAt(100, 30_000) });
+    const restored = suspendRun(JSON.parse(JSON.stringify(s)), 40_000);
+    expect(restored.status).toBe("paused");
+    expect(movingMs(restored, 999_999)).toBe(40_000);
+    expect(restored.distance).toBeCloseTo(100, 0);
+    expect(restored.cues).toEqual([]);
+    // Resuming re-anchors on the next fix instead of jumping from the old position.
+    let r = runReducer(restored, { type: "resume", now: 100_000 });
+    r = runReducer(r, { type: "fix", fix: fixAt(900, 101_000) });
+    expect(r.distance).toBeCloseTo(100, 0);
+  });
+
+  it("leaves paused and finished runs as they were", () => {
+    let s = runReducer(createRun({ steps: [], vdot: 45, goal: "10k", splitUnit: 1000 }), { type: "start", now: 0 });
+    s = runReducer(s, { type: "pause", now: 5000 });
+    expect(movingMs(suspendRun(s, 60_000), 60_000)).toBe(5000);
   });
 });

@@ -15,7 +15,7 @@ export function RestBar() {
   const insets = useSafeAreaInsets();
   const restEndsAt = useActiveSession((s) => s.restEndsAt);
   const restTotal = useActiveSession((s) => s.restTotal);
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const alerted = useRef<number | null>(null);
 
   useEffect(() => {

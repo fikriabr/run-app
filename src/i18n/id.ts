@@ -146,6 +146,9 @@ export const id: Dictionary = {
     planDoneHint: "Kerja bagus. Mulai program baru saat kamu siap untuk blok berikutnya.",
     newPlan: "Mulai program baru",
     notStarted: (date) => `Programmu mulai pada ${date}.`,
+    unfinishedTitle: "Lari belum selesai",
+    unfinishedBody: (distance) => `App tertutup saat kamu lari (${distance} tercatat). Lanjutkan dari titik terakhir, atau buang.`,
+    unfinishedResume: "Lanjutkan lari",
   },
   plan: {
     title: "Program",
@@ -174,6 +177,10 @@ export const id: Dictionary = {
   },
   run: {
     gpsSearching: "Mencari sinyal GPS",
+    gpsOffTitle: "Lokasi dimatikan",
+    gpsOffBody: "Nyalakan layanan lokasi di pengaturan HP, lalu coba lagi.",
+    gpsErrorTitle: "GPS tidak terbaca",
+    gpsErrorBody: "HP tidak mengirim lokasi. Pastikan lokasi menyala, lalu coba lagi.",
     gpsReady: "GPS siap",
     gpsWeak: (m) => `Sinyal GPS lemah (±${m} m)`,
     permissionTitle: "Perlu akses lokasi",
@@ -294,6 +301,7 @@ export const id: Dictionary = {
       easier: "Lari terasa lebih ringan dari rencana",
       fasterThanTarget: "Lari lebih cepat dari target",
       missedWorkouts: "Diturunkan setelah lari terlewat",
+      runDeleted: "Dibatalkan karena lari dihapus",
     },
   },
   fitness: {

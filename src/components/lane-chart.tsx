@@ -27,25 +27,24 @@ export function LaneChart({ steps, vdot, goal, height = 56, activeIndex, activeP
   const gap = 2;
   const width = 1000;
   const usable = width - gap * Math.max(0, steps.length - 1);
-  let x = 0;
+  const widths = durations.map((d) => Math.max(3, (d / total) * usable));
+  const starts = widths.map((_, i) => widths.slice(0, i).reduce((sum, w) => sum + w + gap, 0));
 
   return (
     <View accessible accessibilityRole="image" accessibilityLabel={accessibilityLabel} style={{ height }}>
       <Svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
         <Line x1={0} x2={width} y1={height - 0.5} y2={height - 0.5} stroke={theme.separator} strokeWidth={1} />
         {steps.map((step, i) => {
-          const w = Math.max(3, (durations[i] / total) * usable);
+          const w = widths[i];
           const h = Math.max(6, zoneIntensity(step.zone) * (height - 4));
           const hard = step.kind === "work" && step.zone !== "easy" && step.zone !== "long";
           const color = step.zone == null ? theme.separator : hard ? theme.accent : theme.primary;
           const done = activeIndex != null && i < activeIndex;
           const active = activeIndex === i;
-          const rectX = x;
-          x += w + gap;
           return (
             <Rect
               key={i}
-              x={rectX}
+              x={starts[i]}
               y={height - h}
               width={w}
               height={h}
@@ -57,8 +56,8 @@ export function LaneChart({ steps, vdot, goal, height = 56, activeIndex, activeP
         })}
         {activeIndex != null && activeIndex < steps.length ? (
           <Line
-            x1={markerX(durations, activeIndex, activeProgress, usable, total, gap)}
-            x2={markerX(durations, activeIndex, activeProgress, usable, total, gap)}
+            x1={starts[activeIndex] + widths[activeIndex] * activeProgress}
+            x2={starts[activeIndex] + widths[activeIndex] * activeProgress}
             y1={0}
             y2={height}
             stroke={theme.text}
@@ -68,10 +67,4 @@ export function LaneChart({ steps, vdot, goal, height = 56, activeIndex, activeP
       </Svg>
     </View>
   );
-}
-
-function markerX(durations: number[], index: number, progress: number, usable: number, total: number, gap: number): number {
-  let x = 0;
-  for (let i = 0; i < index; i++) x += Math.max(3, (durations[i] / total) * usable) + gap;
-  return x + Math.max(3, (durations[index] / total) * usable) * progress;
 }

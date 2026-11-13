@@ -245,3 +245,12 @@ export function toActivity(
     ...extra,
   };
 }
+
+/**
+ * Freezes a recording restored after the app was killed: moving time stops at the last
+ * snapshot, so the minutes the app was dead are not counted, and pending cues are dropped.
+ */
+export function suspendRun(state: RunState, at: number): RunState {
+  const paused = state.status === "running" ? runReducer(state, { type: "pause", now: at }) : state;
+  return { ...paused, cues: [], lastFix: null, recent: [] };
+}

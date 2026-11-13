@@ -1,6 +1,6 @@
 import * as Haptics from "expo-haptics";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Linking, Pressable, ScrollView, TextInput, View, type ViewStyle } from "react-native";
 import { EmptyState } from "@/components/banner";
 import { Button } from "@/components/button";
@@ -22,10 +22,14 @@ type Tab = "track" | "howto" | "history";
 
 export function SessionExerciseScreen() {
   const { index } = useLocalSearchParams<{ index: string }>();
+  // Keyed so moving to the next exercise starts on the Track tab with fresh local state.
+  return <SessionExercise key={index} idx={Number(index)} />;
+}
+
+function SessionExercise({ idx }: { idx: number }) {
   const t = useT();
   const l = useLocalized();
   const theme = useTheme();
-  const idx = Number(index);
   const active = useActiveSession((s) => s.active);
   const history = useTrainingStore((s) => s.sessions);
   const [tab, setTab] = useState<Tab>("track");
@@ -34,8 +38,6 @@ export function SessionExerciseScreen() {
   const { video } = useExerciseVideo(info ?? ({ id: "" } as Exercise));
   const previous = useMemo(() => (info ? previousSets(history, info.id) : []), [history, info]);
   const bests = useMemo(() => (info ? exerciseBests(history, info.id) : null), [history, info]);
-
-  useEffect(() => setTab("track"), [idx]);
 
   if (!active || !exercise || !info || !bests) {
     return <EmptyState icon="strength" title={t.training.sessionNotFound} body={t.training.noRecent} />;
@@ -238,11 +240,10 @@ function LastLine({ text }: { text: string }) {
 /** Keeps its own text while focused so "12." can be typed on the way to "12.5". */
 function ValueBox({ value, unit, onCommit, decimal, label }: { value: string; unit: string; onCommit: (text: string) => void; decimal?: boolean; label: string }) {
   const theme = useTheme();
-  const [text, setText] = useState(value);
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    if (!focused) setText(value);
-  }, [value, focused]);
+  // A draft exists only while the field is focused; otherwise the stored value shows.
+  const [draft, setDraft] = useState<string | null>(null);
+  const focused = draft != null;
+  const text = draft ?? value;
   return (
     <View
       style={{
@@ -260,11 +261,11 @@ function ValueBox({ value, unit, onCommit, decimal, label }: { value: string; un
     >
       <TextInput
         value={text}
-        onChangeText={setText}
-        onFocus={() => setFocused(true)}
+        onChangeText={setDraft}
+        onFocus={() => setDraft(value)}
         onBlur={() => {
-          setFocused(false);
           onCommit(text);
+          setDraft(null);
         }}
         onSubmitEditing={() => onCommit(text)}
         keyboardType={decimal ? "decimal-pad" : "number-pad"}
