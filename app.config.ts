@@ -67,6 +67,7 @@ const config: ExpoConfig = {
       },
     ],
     ["react-native-maps", androidMapsKey ? { androidGoogleMapsApiKey: androidMapsKey } : {}],
+    "./plugins/workmanager",
     ...(withCrashLog ? ["./plugins/crash-log"] : []),
   ],
   experiments: {
