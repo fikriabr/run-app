@@ -3,6 +3,9 @@ import type { ExpoConfig } from "expo/config";
 // Android release builds need a Google Maps key; without it the app draws routes with SVG instead.
 const androidMapsKey = process.env.GOOGLE_MAPS_ANDROID_API_KEY;
 
+// Test builds get an on-device crash log ("Langkah log" launcher entry); store builds do not.
+const withCrashLog = process.env.EAS_BUILD_PROFILE !== "production";
+
 const config: ExpoConfig = {
   name: "Langkah",
   slug: "langkah",
@@ -64,6 +67,7 @@ const config: ExpoConfig = {
       },
     ],
     ["react-native-maps", androidMapsKey ? { androidGoogleMapsApiKey: androidMapsKey } : {}],
+    ...(withCrashLog ? ["./plugins/crash-log"] : []),
   ],
   experiments: {
     typedRoutes: true,
