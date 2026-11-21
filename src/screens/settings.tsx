@@ -79,6 +79,22 @@ export function SettingsScreen() {
         {toggle(t.settings.splitCues, "splitCues", undefined, !settings.voice)}
         {toggle(t.settings.paceCues, "paceCues", undefined, !settings.voice)}
       </Section>
+      <View style={{ gap: space.m }}>
+        <SectionTitle>{t.settings.videoModel}</SectionTitle>
+        <ChipRow>
+          {(["male", "female"] as const).map((model) => (
+            <Chip
+              key={model}
+              label={t.settings[model]}
+              selected={(settings.videoModel ?? "male") === model}
+              onPress={() => update({ videoModel: model })}
+            />
+          ))}
+        </ChipRow>
+        <Txt variant="caption" muted>
+          {t.settings.videoModelHint}
+        </Txt>
+      </View>
       <Section>
         <View style={{ flexDirection: "row", alignItems: "center", gap: space.m, paddingHorizontal: 16, paddingVertical: 12, minHeight: 52 }}>
           <View style={{ flex: 1, gap: 2 }}>

@@ -1,4 +1,14 @@
-import type { Exercise, LoggedSet, Routine, SessionExercise, TrainingSession } from "./training-types";
+import type { Exercise, ExerciseVideo, LoggedSet, Routine, SessionExercise, TrainingSession, VideoModel } from "./training-types";
+
+/**
+ * The demo video to show for the runner's chosen model. Diastasis recti moves always prefer a
+ * female demonstrator. When the preferred model has no video, the other one is used.
+ */
+export function pickVideo(exercise: Pick<Exercise, "category" | "videos">, model: VideoModel): ExerciseVideo | undefined {
+  const preferred: VideoModel = exercise.category === "diastasis" ? "female" : model;
+  const other: VideoModel = preferred === "male" ? "female" : "male";
+  return exercise.videos?.[preferred] ?? exercise.videos?.[other];
+}
 
 export function emptySet(exercise: Pick<Exercise, "measure">, target: number | null, weight: number | null): LoggedSet {
   return {

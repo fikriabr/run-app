@@ -1,11 +1,13 @@
 import { Linking, TextInput, View } from "react-native";
 import { useState } from "react";
 import { Banner } from "@/components/banner";
+import { Icon } from "@/components/icon";
 import { Button } from "@/components/button";
 import { Row, Section, SectionTitle } from "@/components/section";
 import { Stat } from "@/components/stat";
 import { Num, Txt } from "@/components/text";
 import { YouTubePlayer } from "@/components/youtube-player";
+import { useExerciseVideo } from "@/hooks/use-exercise-video";
 import { useFormat } from "@/hooks/use-format";
 import { useWeight } from "@/hooks/use-weight";
 import { useLocalized, useT } from "@/i18n";
@@ -14,10 +16,7 @@ import type { Exercise, LoggedSet } from "@/lib/training-types";
 import { useTrainingStore } from "@/store/training-store";
 import { fonts, radius, space, useTheme } from "@/theme";
 
-export function useExerciseVideo(exercise: Exercise) {
-  const override = useTrainingStore((s) => s.videoOverrides[exercise.id]);
-  return { video: override ?? exercise.video, isOverride: override != null };
-}
+export { useExerciseVideo };
 
 /** Steps, safety note, tip, muscles and equipment. */
 export function ExerciseHowTo({ exercise }: { exercise: Exercise }) {
@@ -48,10 +47,35 @@ export function ExerciseHowTo({ exercise }: { exercise: Exercise }) {
           </Txt>
         ) : null}
       </View>
+      {exercise.avoid ? <AvoidList avoid={exercise.avoid} /> : null}
       <Section>
         <Row title={t.training.muscles} subtitle={exercise.muscles.map((m) => t.training.muscle[m]).join(", ")} />
         <Row title={t.training.equipmentLabel} subtitle={exercise.equipment.map((e) => t.training.equipment[e]).join(", ")} />
       </Section>
+    </View>
+  );
+}
+
+/** Movements to leave out, shown on diastasis recti exercises and above that category in the library. */
+export function AvoidList({ avoid }: { avoid: { en: string[]; id: string[] } }) {
+  const t = useT();
+  const l = useLocalized();
+  const theme = useTheme();
+  const items = avoid[l({ en: "en", id: "id" }) as "en" | "id"];
+  return (
+    <View style={{ gap: space.m }}>
+      <SectionTitle>{t.training.avoidTitle}</SectionTitle>
+      <Section style={{ padding: 16, gap: space.m }}>
+        {items.map((item) => (
+          <View key={item} style={{ flexDirection: "row", gap: space.m, alignItems: "flex-start" }}>
+            <Icon name="skipped" size={18} color={theme.accentText} />
+            <Txt style={{ flex: 1 }}>{item}</Txt>
+          </View>
+        ))}
+      </Section>
+      <Txt variant="caption" muted>
+        {t.training.avoidHint}
+      </Txt>
     </View>
   );
 }

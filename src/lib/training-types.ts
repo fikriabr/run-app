@@ -6,7 +6,7 @@ export interface Localized {
 
 export type ExerciseCategory = "strength" | "core" | "plyometric" | "yoga" | "diastasis" | "mobility";
 
-export type Equipment = "none" | "dumbbell" | "band" | "box" | "mat" | "wall" | "bench";
+export type Equipment = "none" | "dumbbell" | "barbell" | "kettlebell" | "band" | "pullupBar" | "box" | "mat" | "wall" | "bench";
 
 export type Muscle =
   | "quads"
@@ -34,6 +34,12 @@ export interface ExerciseVideo {
   end?: number;
 }
 
+/** Who demonstrates in an exercise video; the runner picks one in Settings. */
+export type VideoModel = "male" | "female";
+
+/** Demo videos per model. Either can be missing; the other one is shown instead. */
+export type ExerciseVideos = Partial<Record<VideoModel, ExerciseVideo>>;
+
 export interface Exercise {
   id: string;
   category: ExerciseCategory;
@@ -49,7 +55,9 @@ export interface Exercise {
   steps: { en: string[]; id: string[] };
   tip?: Localized;
   caution?: Localized;
-  video?: ExerciseVideo;
+  /** Movements to leave out while this kind of training is needed, shown as a list. */
+  avoid?: { en: string[]; id: string[] };
+  videos?: ExerciseVideos;
 }
 
 export interface RoutineItem {

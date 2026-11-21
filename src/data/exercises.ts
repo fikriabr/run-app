@@ -1,20 +1,15 @@
 import type { Exercise } from "@/lib/training-types";
+import { EXERCISE_VIDEOS } from "./exercise-videos";
+import { DR_AVOID, DR_CAUTION, MORE_EXERCISES } from "./exercises-more";
 
-// Videos are real YouTube tutorials found by search; titles are kept as listed so the source is visible.
-// They were not playable from the build environment, so the app also offers "watch on YouTube" and "change video".
-// Add `start` and `end` (seconds) to a video to loop only the demo part instead of the whole tutorial.
+// Demo videos live in exercise-videos.ts, one per model (male and female) where both were found.
 
 const PLYO_CAUTION = {
   en: "Land softly and quietly. Skip jumping work if you have a current calf, Achilles or knee injury.",
   id: "Mendarat pelan dan tanpa suara keras. Lewati latihan lompat jika sedang cedera betis, Achilles, atau lutut.",
 };
 
-const DR_CAUTION = {
-  en: "If the midline of your belly domes or cones, or you feel pelvic pressure or leaking, make the move easier or stop. A pelvic health physiotherapist can check your gap and technique.",
-  id: "Jika garis tengah perut menonjol seperti kubah, atau terasa tekanan atau bocor di panggul, buat gerakannya lebih ringan atau berhenti. Fisioterapis kesehatan panggul bisa memeriksa celah otot dan tekniknya.",
-};
-
-export const EXERCISES: Exercise[] = [
+const CORE_EXERCISES: Exercise[] = [
   // Strength
   {
     id: "squat",
@@ -30,7 +25,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri dengan kaki sedikit lebih lebar dari pinggul, ujung kaki sedikit keluar.", "Turunkan pinggul ke belakang dan bawah, dada tetap tegak, lutut searah ujung kaki.", "Turun serendah yang bisa dengan punggung netral, lalu dorong lewat seluruh telapak untuk berdiri."],
     },
     tip: { en: "Do not let the knees cave inward.", id: "Jangan biarkan lutut jatuh ke dalam." },
-    video: { id: "ZLJBfYF_oO0", title: "Bodyweight Squat: How To (3 steps to proper form)" },
   },
   {
     id: "goblet-squat",
@@ -45,7 +39,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Hold one dumbbell vertically against your chest, elbows pointing down.", "Squat down between your knees, keeping the weight close and the torso tall.", "Pause at the bottom, then stand by pushing the floor away."],
       id: ["Pegang satu dumbbell tegak menempel di dada, siku mengarah ke bawah.", "Squat turun di antara lutut, beban tetap dekat badan dan tubuh tegak.", "Tahan sebentar di bawah, lalu berdiri dengan mendorong lantai."],
     },
-    video: { id: "JO7D6GJ98wY", title: "How To Do A Goblet Squat Correctly" },
   },
   {
     id: "reverse-lunge",
@@ -61,7 +54,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri tegak, kaki selebar pinggul.", "Langkahkan satu kaki ke belakang dan turun sampai kedua lutut menekuk sekitar 90 derajat.", "Jaga lutut depan di atas kaki depan, lalu dorong lewat tumit depan untuk kembali."],
     },
     tip: { en: "Stepping back is easier on the knees than stepping forward.", id: "Melangkah ke belakang lebih ramah lutut dibanding melangkah ke depan." },
-    video: { id: "ALl174GTuoY", title: "Reverse Lunge Form for Beginners (Step-by-Step)" },
   },
   {
     id: "bulgarian-split-squat",
@@ -77,7 +69,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Letakkan punggung kaki belakang di bangku atau kursi di belakangmu.", "Turun lurus ke bawah sampai lutut belakang hampir menyentuh lantai.", "Condongkan badan sedikit ke depan dan dorong naik lewat kaki depan."],
     },
     tip: { en: "If you wobble, use a lower bench or hold a wall.", id: "Kalau goyang, pakai bangku lebih rendah atau pegang dinding." },
-    video: { id: "VPhhE6bBzZE", title: "How To Do Bulgarian Split Squats Correctly" },
   },
   {
     id: "dumbbell-rdl",
@@ -93,7 +84,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri dengan dumbbell di depan paha, lutut sedikit menekuk.", "Dorong pinggul ke belakang dan turunkan beban menyusuri kaki, punggung lurus.", "Berhenti saat paha belakang terasa tertarik kuat, lalu kencangkan bokong untuk berdiri."],
     },
     tip: { en: "Only go as low as you can keep a flat back.", id: "Turun hanya sejauh punggung masih bisa lurus." },
-    video: { id: "hQgFixeXdZo", title: "Dumbbell Romanian (RDL) Deadlift |TECHNIQUE for Beginners" },
   },
   {
     id: "single-leg-rdl",
@@ -109,7 +99,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri di satu kaki dengan lutut sedikit menekuk.", "Condongkan badan ke depan sementara kaki bebas memanjang lurus ke belakang, pinggul tetap sejajar lantai.", "Kembali dengan mendorong pinggul ke depan. Pegang beban di tangan berlawanan untuk menambah tantangan."],
     },
     tip: { en: "Builds the single-leg balance running depends on.", id: "Membangun keseimbangan satu kaki yang dibutuhkan saat lari." },
-    video: { id: "6pEL3KxnlEo", title: "How to do a Single-Leg Romanian Deadlift" },
   },
   {
     id: "step-up",
@@ -124,7 +113,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Place one whole foot on a sturdy box or step.", "Drive through that foot to stand on top without pushing off the back leg.", "Lower slowly back down with control."],
       id: ["Letakkan seluruh telapak satu kaki di boks atau anak tangga yang kokoh.", "Dorong lewat kaki itu untuk berdiri di atas tanpa menolak dengan kaki belakang.", "Turun perlahan dengan terkontrol."],
     },
-    video: { id: "dQqApCGd5Ss", title: "How to Do Step-Ups" },
   },
   {
     id: "glute-bridge",
@@ -140,7 +128,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berbaring telentang, lutut menekuk, telapak kaki rata selebar pinggul.", "Buang napas dan tekan lewat tumit untuk mengangkat pinggul sampai lutut, pinggul, dan bahu segaris.", "Kencangkan bokong di atas, lalu turun perlahan."],
     },
     tip: { en: "Avoid arching the lower back at the top.", id: "Hindari punggung bawah melengkung di posisi atas." },
-    video: { id: "Q_Bpj91Yiis", title: "Glute Bridge Exercise - The correct way of doing it" },
   },
   {
     id: "single-leg-glute-bridge",
@@ -155,7 +142,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Set up as for a glute bridge, then lift one foot off the floor.", "Press through the planted heel to raise the hips level.", "Keep the pelvis from dropping on the free side, then lower."],
       id: ["Posisi seperti glute bridge, lalu angkat satu kaki dari lantai.", "Tekan lewat tumit yang menapak untuk mengangkat pinggul sejajar.", "Jaga panggul tidak turun di sisi kaki yang terangkat, lalu turun."],
     },
-    video: { id: "mB8apVKUWr8", title: "How to Do a Single Leg Glute Bridge Correctly" },
   },
   {
     id: "hip-thrust",
@@ -170,7 +156,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Rest your upper back on a bench, feet flat, weight on the hips.", "Drive through the heels until the torso is roughly parallel to the floor.", "Keep the chin tucked and ribs down; pause, then lower."],
       id: ["Sandarkan punggung atas di bangku, telapak kaki rata, beban di pinggul.", "Dorong lewat tumit sampai badan kira-kira sejajar lantai.", "Dagu sedikit menunduk dan rusuk tidak terangkat; tahan, lalu turun."],
     },
-    video: { id: "UmY5lVwpycE", title: "How to Do the Hip Thrust For Beginners" },
   },
   {
     id: "calf-raise",
@@ -186,7 +171,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri tegak, pegang dinding untuk keseimbangan bila perlu.", "Naik ke ujung telapak kaki setinggi mungkin.", "Tahan, lalu turun perlahan selama dua sampai tiga detik."],
     },
     tip: { en: "Do them on one leg once two legs feel easy. Strong calves take a lot of load in running.", id: "Lakukan satu kaki kalau dua kaki sudah terasa mudah. Betis yang kuat menahan banyak beban saat lari." },
-    video: { id: "KRJIKsY02nE", title: "Standing Calf Raise Tutorial for Beginners" },
   },
   {
     id: "push-up",
@@ -201,7 +185,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Hands under the shoulders, body in one line from head to heels.", "Lower the chest toward the floor with elbows at about 45 degrees.", "Press back up without letting the hips sag. Use a bench or knees to make it easier."],
       id: ["Tangan di bawah bahu, badan satu garis dari kepala sampai tumit.", "Turunkan dada ke lantai dengan siku sekitar 45 derajat.", "Dorong naik tanpa pinggul melorot. Pakai bangku atau lutut untuk versi lebih ringan."],
     },
-    video: { id: "s1X8e4JFdbE", title: "How To Do Push Ups Correctly" },
   },
   {
     id: "dumbbell-row",
@@ -216,7 +199,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Support one hand and knee on a bench, back flat.", "Pull the dumbbell toward your hip, elbow close to the body.", "Lower until the arm is straight without twisting the torso."],
       id: ["Tumpukan satu tangan dan lutut di bangku, punggung lurus.", "Tarik dumbbell ke arah pinggul, siku dekat badan.", "Turunkan sampai lengan lurus tanpa memutar badan."],
     },
-    video: { id: "ZRSGpBUVcNw", title: "How To Do Single Arm Dumbbell Rows" },
   },
   {
     id: "shoulder-press",
@@ -231,7 +213,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Stand with dumbbells at shoulder height, elbows under the wrists.", "Brace the core and press the weights overhead.", "Lower back to the shoulders under control without arching the back."],
       id: ["Berdiri dengan dumbbell setinggi bahu, siku di bawah pergelangan.", "Kencangkan perut dan dorong beban ke atas kepala.", "Turunkan ke bahu dengan terkontrol tanpa melengkungkan punggung."],
     },
-    video: { id: "bmy7tIopNt4", title: "Standing Dumbbell Shoulder Press (Tutorial + Tips)" },
   },
   {
     id: "floor-press",
@@ -246,7 +227,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your back, knees bent, dumbbells above the chest.", "Lower until the backs of the upper arms touch the floor, elbows tucked.", "Press back up in a slight arc."],
       id: ["Berbaring telentang, lutut menekuk, dumbbell di atas dada.", "Turunkan sampai lengan atas menyentuh lantai, siku dekat badan.", "Dorong kembali ke atas membentuk lengkung kecil."],
     },
-    video: { id: "T0Y3OBF1bNI", title: "How To Do A Dumbbell Floor Press" },
   },
   {
     id: "lateral-band-walk",
@@ -262,7 +242,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Pasang band di atas lutut atau pergelangan kaki dan turun ke posisi setengah squat ringan.", "Melangkah ke samping, band tetap tegang dan ujung kaki menghadap depan.", "Lakukan jumlah langkah ke satu arah, lalu kembali."],
     },
     tip: { en: "Trains the outer glutes that keep the knee in line when you land.", id: "Melatih bokong samping yang menjaga lutut tetap lurus saat mendarat." },
-    video: { id: "cbDudaLroVs", title: "How to Perform Lateral Band Walks" },
   },
   {
     id: "clamshell",
@@ -277,7 +256,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your side, hips and knees bent, feet together.", "Keeping the feet touching, lift the top knee without rolling the pelvis back.", "Lower slowly. Add a band above the knees to progress."],
       id: ["Berbaring miring, pinggul dan lutut menekuk, kedua kaki rapat.", "Dengan kaki tetap menempel, angkat lutut atas tanpa memutar panggul ke belakang.", "Turunkan perlahan. Tambah band di atas lutut untuk menambah beban."],
     },
-    video: { id: "_dMOwuSt8O4", title: "Clam Exercise Explained: How to Do Clams Correctly" },
   },
 
   // Core
@@ -294,7 +272,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Rest on forearms and toes, elbows under the shoulders.", "Squeeze the glutes and brace the belly so the body is one straight line.", "Breathe steadily and hold without letting the hips sag or pike."],
       id: ["Bertumpu pada lengan bawah dan ujung kaki, siku di bawah bahu.", "Kencangkan bokong dan perut sehingga badan satu garis lurus.", "Bernapas teratur dan tahan tanpa pinggul turun atau naik."],
     },
-    video: { id: "6LqqeBtFn9M", title: "How to do the perfect PLANK: technique and common mistakes" },
   },
   {
     id: "side-plank",
@@ -309,7 +286,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your side with the elbow under the shoulder.", "Lift the hips so the body forms a straight line from head to feet.", "Hold, then switch sides. Bend the bottom knee to make it easier."],
       id: ["Berbaring miring dengan siku di bawah bahu.", "Angkat pinggul sehingga badan lurus dari kepala ke kaki.", "Tahan, lalu ganti sisi. Tekuk lutut bawah untuk versi lebih ringan."],
     },
-    video: { id: "0M-erHBl48U", title: "Side Plank Tutorial - Proper Form + 5 Progressions" },
   },
   {
     id: "dead-bug",
@@ -324,7 +300,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your back, arms to the ceiling, hips and knees at 90 degrees.", "Keep the lower back gently against the floor.", "Slowly lower one arm and the opposite leg, then return and switch."],
       id: ["Berbaring telentang, lengan ke atas, pinggul dan lutut 90 derajat.", "Jaga punggung bawah menempel ringan ke lantai.", "Turunkan perlahan satu lengan dan kaki yang berlawanan, kembali, lalu ganti."],
     },
-    video: { id: "-gRN_JyVTLY", title: "How To Do The Dead Bug Correctly" },
   },
   {
     id: "bird-dog",
@@ -339,7 +314,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Start on hands and knees, wrists under shoulders and knees under hips.", "Reach one arm forward and the opposite leg back without tilting the hips.", "Pause, return, and switch sides."],
       id: ["Mulai merangkak, pergelangan di bawah bahu dan lutut di bawah pinggul.", "Julurkan satu lengan ke depan dan kaki berlawanan ke belakang tanpa memiringkan pinggul.", "Tahan, kembali, lalu ganti sisi."],
     },
-    video: { id: "KA0ekfSePrQ", title: "How to do a Bird Dog Exercise" },
   },
   {
     id: "pallof-press",
@@ -355,7 +329,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Ikat band setinggi dada dan berdiri menyamping terhadapnya.", "Pegang band di depan dada dan melangkah menjauh sampai tegang.", "Dorong lurus ke depan lalu kembali tanpa badan ikut terputar."],
     },
     tip: { en: "Trains the core to resist rotation, which is its job when you run.", id: "Melatih inti tubuh menahan putaran, persis tugasnya saat lari." },
-    video: { id: "lqPrSGXfL1Q", title: "How To: Resistance Band Pallof Press" },
   },
   {
     id: "russian-twist",
@@ -370,7 +343,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Sit with knees bent and lean back slightly with a long spine.", "Rotate the ribcage to one side, then the other, moving the hands with it.", "Keep the movement in the torso, not the whole body swaying."],
       id: ["Duduk dengan lutut menekuk dan condong sedikit ke belakang, punggung panjang.", "Putar rongga dada ke satu sisi lalu sisi lain, tangan ikut bergerak.", "Gerakan berasal dari badan, bukan seluruh tubuh bergoyang."],
     },
-    video: { id: "tAmsTZD9tjc", title: "How To Russian Twist - Form Cues & Demo" },
   },
 
   // Plyometric
@@ -388,7 +360,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Squat ke kedalaman nyaman dengan lengan ke belakang.", "Ayunkan lengan dan lompat lurus ke atas.", "Mendarat pelan dengan seluruh telapak, lutut searah ujung kaki, atur ulang, ulangi."],
     },
     caution: PLYO_CAUTION,
-    video: { id: "8Sl9h44XNJA", title: "Squat Jump: How To (3 steps to proper form)" },
   },
   {
     id: "box-jump",
@@ -404,7 +375,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri sejarak satu lengan dari boks rendah yang kokoh.", "Ayunkan lengan dan lompat ke atas boks, mendarat pelan setengah squat.", "Berdiri tegak, lalu turun dengan melangkah, bukan melompat."],
     },
     caution: PLYO_CAUTION,
-    video: { id: "YLPQsdRDmB0", title: "How To Box Jump Properly" },
   },
   {
     id: "skater-jump",
@@ -420,7 +390,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Seimbang di satu kaki yang sedikit menekuk.", "Tolak ke samping dan mendarat di kaki lain, kaki belakang menyapu ke belakang.", "Tahan pendaratan sejenak sebelum melompat kembali."],
     },
     caution: PLYO_CAUTION,
-    video: { id: "iYklZQwOvoU", title: "How to Do Lateral Skater Jumps for Speed, Balance & Power" },
   },
   {
     id: "pogo-hops",
@@ -437,7 +406,6 @@ export const EXERCISES: Exercise[] = [
     },
     tip: { en: "Trains the calf and Achilles to store and return energy, which is what they do every stride.", id: "Melatih betis dan Achilles menyimpan dan melepas energi, seperti yang terjadi di setiap langkah lari." },
     caution: PLYO_CAUTION,
-    video: { id: "aB8drZn0KS0", title: "Pogo Hops - Developing speed & quickness" },
   },
   {
     id: "split-jump",
@@ -453,7 +421,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Mulai dalam posisi lunge, lutut depan sekitar 90 derajat.", "Lompat dan tukar posisi kaki di udara.", "Mendarat pelan di lunge sebaliknya dan lanjutkan."],
     },
     caution: PLYO_CAUTION,
-    video: { id: "j7ODZHSEGQA", title: "Split Jump - How To" },
   },
   {
     id: "broad-jump",
@@ -469,7 +436,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berdiri dengan kaki selebar bahu.", "Ayunkan lengan ke belakang sambil menurunkan pinggul, lalu lompat sejauh mungkin ke depan.", "Mendarat dengan dua kaki dalam squat lembut dan tahan sebelum berjalan kembali."],
     },
     caution: PLYO_CAUTION,
-    video: { id: "z1IDJMMg024", title: "How to do the Broad Jump Properly" },
   },
   {
     id: "a-skip",
@@ -485,7 +451,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Skip ke depan dengan mengangkat satu lutut setinggi pinggul.", "Hentakkan kaki di bawah pinggul dengan gerakan mencakar saat kaki turun.", "Badan tegak dan ayunan lengan berlawanan sejauh 15 sampai 20 meter."],
     },
     tip: { en: "Count each length as one rep. A running-form drill, not a workout on its own.", id: "Hitung satu lintasan sebagai satu repetisi. Ini drill teknik lari, bukan latihan tersendiri." },
-    video: { id: "GQg9L28bi1g", title: "A Skip Running Drill" },
   },
   {
     id: "high-knees",
@@ -500,7 +465,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Stand tall and run in place or slowly forward.", "Drive the knees to hip height with quick, springy foot contacts.", "Pump the arms and stay tall through the whole set."],
       id: ["Berdiri tegak dan lari di tempat atau maju perlahan.", "Angkat lutut setinggi pinggul dengan kontak kaki cepat dan memantul.", "Ayunkan lengan dan tetap tegak sepanjang set."],
     },
-    video: { id: "GtbxEKJAtvs", title: "Running Drill #3: High Knees" },
   },
 
   // Yoga
@@ -517,7 +481,6 @@ export const EXERCISES: Exercise[] = [
       en: ["From hands and knees, tuck the toes and lift the hips up and back.", "Press the floor away with the hands and lengthen the spine.", "Bend the knees as much as you need to keep the back long; pedal the heels gently."],
       id: ["Dari posisi merangkak, tekuk jari kaki dan angkat pinggul ke atas dan belakang.", "Dorong lantai dengan tangan dan panjangkan tulang belakang.", "Tekuk lutut seperlunya agar punggung tetap panjang; gerakkan tumit bergantian."],
     },
-    video: { id: "Y0GDgQqt-bA", title: "How to do Downward Facing Dog" },
   },
   {
     id: "childs-pose",
@@ -532,7 +495,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Kneel and sit the hips back toward the heels, knees together or wide.", "Fold forward and rest the forehead on the mat or a cushion.", "Reach the arms forward or rest them by the feet; breathe into the back."],
       id: ["Berlutut dan duduk ke arah tumit, lutut rapat atau terbuka.", "Lipat badan ke depan dan letakkan dahi di matras atau bantal.", "Julurkan lengan ke depan atau letakkan di samping kaki; tarik napas ke arah punggung."],
     },
-    video: { id: "o1MFxKlaWYU", title: "How to Do Child's Pose in Yoga" },
   },
   {
     id: "low-lunge",
@@ -547,7 +509,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Step one foot forward and lower the back knee to the mat.", "Shift the hips forward until you feel the front of the back hip open.", "Lift the chest and keep the lower back from sinking."],
       id: ["Langkahkan satu kaki ke depan dan turunkan lutut belakang ke matras.", "Geser pinggul ke depan sampai bagian depan pinggul belakang terasa terbuka.", "Angkat dada dan jaga punggung bawah tidak melorot."],
     },
-    video: { id: "4O_wAn8FgiI", title: "How to do Anjaneyasana, Low Lunge Tutorial for Beginners - Plus Tips & Tricks" },
   },
   {
     id: "pigeon-pose",
@@ -563,7 +524,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Dari downward dog, bawa satu lutut ke depan di belakang pergelangan dengan tulang kering menyilang.", "Luruskan kaki belakang dan sejajarkan pinggul; taruh bantal di bawah pinggul jika terangkat.", "Tetap tegak atau lipat badan ke depan di atas kaki depan."],
     },
     caution: { en: "Back off if you feel the stretch in the knee rather than the hip.", id: "Kurangi jika tarikan terasa di lutut, bukan di pinggul." },
-    video: { id: "zuYbjkuKLKY", title: "How To SAFELY Do Pigeon Pose For Beginners (5-min)" },
   },
   {
     id: "warrior-2",
@@ -578,7 +538,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Step the feet wide, front toes forward and back foot turned in slightly.", "Bend the front knee over the ankle and reach the arms out at shoulder height.", "Gaze over the front hand and keep the torso centred between the legs."],
       id: ["Buka kaki lebar, ujung kaki depan menghadap depan dan kaki belakang sedikit ke dalam.", "Tekuk lutut depan di atas pergelangan kaki dan rentangkan lengan setinggi bahu.", "Pandang ke atas tangan depan dan jaga badan di tengah kedua kaki."],
     },
-    video: { id: "pJhevMZfOHA", title: "How to Do Warrior II Pose with Correct Alignment" },
   },
   {
     id: "cat-cow",
@@ -593,7 +552,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Start on hands and knees.", "Inhale, let the belly drop and lift the gaze (cow).", "Exhale, round the back and tuck the chin (cat). Move slowly with the breath."],
       id: ["Mulai dalam posisi merangkak.", "Tarik napas, biarkan perut turun dan pandangan naik (cow).", "Buang napas, bulatkan punggung dan tundukkan dagu (cat). Bergerak pelan mengikuti napas."],
     },
-    video: { id: "tN0q2u9I2BI", title: "How to do Cat Cow Yoga Pose" },
   },
   {
     id: "sphinx-pose",
@@ -608,7 +566,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your front with forearms under the shoulders.", "Press the forearms down to lift the chest, shoulders away from the ears.", "Keep the glutes relaxed and breathe."],
       id: ["Berbaring tengkurap dengan lengan bawah di bawah bahu.", "Tekan lengan bawah untuk mengangkat dada, bahu menjauh dari telinga.", "Bokong rileks dan bernapas."],
     },
-    video: { id: "66cA48-WdGw", title: "How To Sphinx Pose or Salamba Bhujangasana with Sarah Kline" },
   },
   {
     id: "supine-twist",
@@ -623,7 +580,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your back with knees bent and arms out to the sides.", "Let both knees fall to one side while the opposite shoulder stays down.", "Breathe slowly, then switch sides."],
       id: ["Berbaring telentang dengan lutut menekuk dan lengan terentang.", "Jatuhkan kedua lutut ke satu sisi sementara bahu berlawanan tetap di lantai.", "Bernapas pelan, lalu ganti sisi."],
     },
-    video: { id: "sADFnhF-Ln0", title: "How To Do A Supine Spinal Twist Yoga Pose (Supta Matsyendrasana)" },
   },
 
   // Diastasis recti
@@ -642,7 +598,6 @@ export const EXERCISES: Exercise[] = [
     },
     tip: { en: "The base for every other move in this category.", id: "Dasar untuk semua gerakan lain di kategori ini." },
     caution: DR_CAUTION,
-    video: { id: "lxpoXK4s5QU", title: "How to restore Diaphragmatic 360 degree breathing" },
   },
   {
     id: "dr-tva",
@@ -658,7 +613,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berbaring telentang, lutut menekuk, tulang belakang netral.", "Tarik napas untuk bersiap. Saat buang napas, angkat ringan dasar panggul dan tarik perut bawah ke arah tulang belakang.", "Tahan ketegangan ringan beberapa detik tanpa menggerakkan panggul atau menahan napas, lalu rileks."],
     },
     caution: DR_CAUTION,
-    video: { id: "Ww7io0ijCe0", title: "Transverse Abdominis Exercises For The Core" },
   },
   {
     id: "dr-pelvic-tilt",
@@ -674,7 +628,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berbaring telentang dengan lutut menekuk dan telapak rata.", "Buang napas, aktifkan otot inti dalam dan ratakan punggung bawah dengan memiringkan panggul.", "Tarik napas dan kembali netral. Bergerak perlahan."],
     },
     caution: DR_CAUTION,
-    video: { id: "n8DU1desCy8", title: "How to do a Pelvic Tilt Lying Down" },
   },
   {
     id: "dr-heel-slide",
@@ -690,7 +643,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berbaring telentang dengan lutut menekuk.", "Buang napas, aktifkan otot inti dalam dan geser satu tumit menjauh perlahan sampai kaki lurus.", "Jaga panggul diam; tarik napas dan geser kembali. Bergantian kaki."],
     },
     caution: DR_CAUTION,
-    video: { id: "v-FpkxSLdvc", title: "Heel Slides - Diastasis Recti Friendly Core Exercise" },
   },
   {
     id: "dr-toe-tap",
@@ -706,7 +658,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Berbaring telentang dan angkat kaki satu per satu ke posisi meja, lutut di atas pinggul.", "Buang napas, aktifkan otot inti dalam dan turunkan satu kaki untuk menyentuh lantai.", "Kembali dan bergantian. Jika dua kaki di atas terlalu berat, biarkan satu kaki di lantai."],
     },
     caution: DR_CAUTION,
-    video: { id: "_xQL8pdr75E", title: "Toe Taps Exercise For Diastasis Recti & Postpartum Core Work" },
   },
   {
     id: "dr-dead-bug",
@@ -722,7 +673,6 @@ export const EXERCISES: Exercise[] = [
       id: ["Mulai dengan telapak kaki di lantai dan lengan ke atas.", "Buang napas, aktifkan otot inti dalam dan julurkan satu lengan ke atas kepala sementara kaki berlawanan bergeser keluar.", "Naik ke posisi kaki di udara hanya jika perut tidak menonjol."],
     },
     caution: DR_CAUTION,
-    video: { id: "wr_gd3yjzkk", title: "Dead Bug Progressions for Diastasis recti - Core Fitness for Moms" },
   },
 
   // Mobility
@@ -739,7 +689,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Step into a long lunge and place both hands inside the front foot.", "Drop the inside elbow toward the front foot.", "Rotate and reach that arm to the ceiling, then straighten the front leg before switching."],
       id: ["Melangkah ke lunge panjang dan letakkan kedua tangan di sisi dalam kaki depan.", "Turunkan siku bagian dalam ke arah kaki depan.", "Putar dan julurkan lengan itu ke atas, lalu luruskan kaki depan sebelum ganti sisi."],
     },
-    video: { id: "-CiWQ2IvY34", title: "The World's Greatest Stretch (Mobility Exercise) by Squat University" },
   },
   {
     id: "hip-flexor-stretch",
@@ -754,7 +703,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Half kneel with a pad under the back knee.", "Tuck the pelvis slightly and squeeze the glute of the kneeling leg.", "Shift forward until you feel the front of the hip stretch, keeping the ribs down."],
       id: ["Setengah berlutut dengan alas di bawah lutut belakang.", "Selipkan panggul sedikit ke bawah dan kencangkan bokong kaki yang berlutut.", "Geser ke depan sampai depan pinggul terasa tertarik, rusuk tetap turun."],
     },
-    video: { id: "UU7Nqd_Dric", title: "How to do a Static Kneeling Hip Flexor Stretch" },
   },
   {
     id: "hamstring-stretch",
@@ -769,7 +717,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Place one heel on a low step with the leg straight and toes up.", "Hinge forward from the hips with a flat back.", "Stop at a strong but comfortable stretch behind the thigh."],
       id: ["Letakkan satu tumit di pijakan rendah dengan kaki lurus dan jari ke atas.", "Condongkan badan dari pinggul dengan punggung lurus.", "Berhenti saat tarikan di belakang paha kuat tapi nyaman."],
     },
-    video: { id: "inLULJztZh0", title: "Hamstring Stretch: Post-Race Standing Stretches" },
   },
   {
     id: "calf-stretch",
@@ -784,7 +731,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Face a wall with hands on it and one foot stepped back, heel down.", "Lean in with the back knee straight to stretch the upper calf.", "Then bend the back knee slightly to move the stretch lower."],
       id: ["Menghadap dinding dengan tangan menempel dan satu kaki di belakang, tumit menapak.", "Condongkan badan dengan lutut belakang lurus untuk meregangkan betis atas.", "Lalu tekuk sedikit lutut belakang agar tarikan pindah ke betis bawah."],
     },
-    video: { id: "xDhzGbQ6dmM", title: "How to stretch your calf muscles properly - Gastocnemius and Soleus muscle stretches." },
   },
   {
     id: "leg-swings",
@@ -799,7 +745,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Hold a wall and stand tall on one leg.", "Swing the other leg forward and back, letting the range grow gradually.", "Then swing side to side across the body. Keep it smooth, not forced."],
       id: ["Pegang dinding dan berdiri tegak di satu kaki.", "Ayunkan kaki lain ke depan dan belakang, biarkan jangkauannya bertambah bertahap.", "Lalu ayunkan ke samping menyilang badan. Halus, jangan dipaksa."],
     },
-    video: { id: "VJUtotryWME", title: "Dynamic Warm Up for Runners: Straight Leg Swings" },
   },
   {
     id: "open-book",
@@ -814,7 +759,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Lie on your side with knees bent and stacked, arms straight in front.", "Keep the knees together and open the top arm across to the other side.", "Follow the hand with your eyes, breathe out at the end, return."],
       id: ["Berbaring miring dengan lutut menekuk bertumpuk, lengan lurus ke depan.", "Lutut tetap rapat dan buka lengan atas ke sisi sebaliknya.", "Ikuti tangan dengan pandangan, buang napas di ujung, kembali."],
     },
-    video: { id: "917w2gqZwZQ", title: "Sidelying Thoracic Rotation (Open Book Exercise)" },
   },
   {
     id: "knee-to-wall",
@@ -829,7 +773,6 @@ export const EXERCISES: Exercise[] = [
       en: ["Face a wall with one foot a few centimetres from it.", "Keeping the heel down, drive the knee forward to touch the wall.", "Move the foot back a little as it gets easy."],
       id: ["Menghadap dinding dengan satu kaki beberapa sentimeter darinya.", "Dengan tumit tetap menapak, dorong lutut ke depan sampai menyentuh dinding.", "Mundurkan kaki sedikit saat terasa mudah."],
     },
-    video: { id: "Y1IZXkdPPdw", title: "Knee to Wall Ankle Mobility Drill" },
   },
   {
     id: "hip-90-90",
@@ -844,8 +787,13 @@ export const EXERCISES: Exercise[] = [
       en: ["Sit with one leg bent in front and the other bent to the side, both at about 90 degrees.", "Lift the knees and rotate through the hips to switch which leg is in front.", "Use your hands behind you for support and move slowly."],
       id: ["Duduk dengan satu kaki menekuk di depan dan yang lain menekuk ke samping, keduanya sekitar 90 derajat.", "Angkat lutut dan putar dari pinggul untuk menukar kaki yang di depan.", "Gunakan tangan di belakang sebagai tumpuan dan bergerak perlahan."],
     },
-    video: { id: "HUZimFZJZWU", title: "How to Do the 90/90 Switch for Hip Mobility (Step-by-Step Tutorial)" },
   },
 ];
+
+export const EXERCISES: Exercise[] = [...CORE_EXERCISES, ...MORE_EXERCISES].map((e) => ({
+  ...e,
+  videos: EXERCISE_VIDEOS[e.id],
+  avoid: e.category === "diastasis" ? DR_AVOID : e.avoid,
+}));
 
 export const EXERCISE_MAP: Record<string, Exercise> = Object.fromEntries(EXERCISES.map((e) => [e.id, e]));

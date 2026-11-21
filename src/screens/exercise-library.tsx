@@ -2,17 +2,21 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { FlatList, ScrollView, TextInput, View } from "react-native";
 import { EmptyState } from "@/components/banner";
+import { Button } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { Row } from "@/components/section";
 import { EXERCISES } from "@/data/exercises";
+import { DR_AVOID } from "@/data/exercises-more";
 import { useLocalized, useT } from "@/i18n";
-import type { ExerciseCategory } from "@/lib/training-types";
+import type { Equipment, ExerciseCategory } from "@/lib/training-types";
 import { useActiveSession } from "@/store/training-store";
 import { useRoutineDraft } from "@/store/routine-draft";
 import { radius, screenContent, space, useTheme, fonts } from "@/theme";
 import { ExerciseThumb } from "@/components/exercise-thumb";
+import { AvoidList } from "./exercise-sections";
 
 const CATEGORIES: ExerciseCategory[] = ["strength", "core", "plyometric", "yoga", "diastasis", "mobility"];
+const EQUIPMENT_FILTERS: Equipment[] = ["none", "dumbbell", "barbell", "kettlebell", "band", "pullupBar", "bench", "box"];
 
 /** Browses the library; with `pick` set it adds the tapped exercise to the workout or routine draft instead. */
 export function ExerciseLibraryScreen() {
@@ -22,11 +26,18 @@ export function ExerciseLibraryScreen() {
   const theme = useTheme();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<ExerciseCategory | null>(null);
+  const [equipment, setEquipment] = useState<Equipment | null>(null);
+  const [showAvoid, setShowAvoid] = useState(false);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return EXERCISES.filter((e) => (!category || e.category === category) && (!q || e.name.en.toLowerCase().includes(q) || e.name.id.toLowerCase().includes(q)));
-  }, [query, category]);
+    return EXERCISES.filter(
+      (e) =>
+        (!category || e.category === category) &&
+        (!equipment || e.equipment.includes(equipment)) &&
+        (!q || e.name.en.toLowerCase().includes(q) || e.name.id.toLowerCase().includes(q)),
+    );
+  }, [query, category, equipment]);
 
   const choose = (exerciseId: string) => {
     if (pick === "session") {
@@ -71,6 +82,19 @@ export function ExerciseLibraryScreen() {
               <Chip key={c} label={t.training.category[c]} selected={category === c} onPress={() => setCategory(c)} />
             ))}
           </ScrollView>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.s }} keyboardShouldPersistTaps="handled">
+            <Chip label={t.training.anyEquipment} selected={equipment == null} onPress={() => setEquipment(null)} />
+            {EQUIPMENT_FILTERS.map((e) => (
+              <Chip key={e} label={t.training.equipment[e]} selected={equipment === e} onPress={() => setEquipment(e)} />
+            ))}
+          </ScrollView>
+          {category === "diastasis" ? (
+            showAvoid ? (
+              <AvoidList avoid={DR_AVOID} />
+            ) : (
+              <Button label={t.training.avoidTitle} kind="secondary" icon="skipped" onPress={() => setShowAvoid(true)} />
+            )
+          ) : null}
         </View>
       }
       ListEmptyComponent={<EmptyState icon="search" title={t.training.noResults} body="" />}

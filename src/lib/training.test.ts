@@ -5,6 +5,7 @@ import { generatePlan } from "./plan-generator";
 import { scheduleStrength } from "./strength-schedule";
 import { weekday } from "./dates";
 import {
+  pickVideo,
   estimateOneRepMax,
   exerciseBests,
   exerciseHistory,
@@ -37,6 +38,21 @@ function finished(id: string, at: number, sets: [string, { reps?: number; weight
   };
 }
 
+describe("pickVideo", () => {
+  const male = { id: "aaaaaaaaaaa", title: "m" };
+  const female = { id: "bbbbbbbbbbb", title: "f" };
+  it("uses the chosen model and falls back to the other", () => {
+    expect(pickVideo({ category: "strength", videos: { male, female } }, "female")).toBe(female);
+    expect(pickVideo({ category: "strength", videos: { male, female } }, "male")).toBe(male);
+    expect(pickVideo({ category: "strength", videos: { female } }, "male")).toBe(female);
+    expect(pickVideo({ category: "strength", videos: undefined }, "male")).toBeUndefined();
+  });
+
+  it("always prefers a female model for diastasis recti", () => {
+    expect(pickVideo({ category: "diastasis", videos: { male, female } }, "male")).toBe(female);
+  });
+});
+
 describe("exercise data", () => {
   it("has unique ids, both languages and well-formed video ids", () => {
     expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(EXERCISES.length);
@@ -44,7 +60,8 @@ describe("exercise data", () => {
       expect(e.steps.en.length).toBeGreaterThan(0);
       expect(e.steps.id.length).toBe(e.steps.en.length);
       expect(e.name.en && e.name.id).toBeTruthy();
-      if (e.video) expect(e.video.id).toMatch(/^[A-Za-z0-9_-]{11}$/);
+      for (const v of Object.values(e.videos ?? {})) expect(v.id).toMatch(/^[A-Za-z0-9_-]{11}$/);
+      expect(e.videos?.male ?? e.videos?.female, `${e.id} has no video`).toBeDefined();
       for (const text of [...e.steps.en, ...e.steps.id, e.name.en, e.name.id, e.tip?.en ?? "", e.tip?.id ?? ""]) expect(text).not.toContain("—");
     }
   });
@@ -61,6 +78,15 @@ describe("exercise data", () => {
     const dr = BUILT_IN_ROUTINES.filter((r) => r.category === "diastasis").flatMap((r) => r.items.map((i) => i.exerciseId));
     expect(dr).not.toContain("russian-twist");
     expect(dr).not.toContain("plank");
+    expect(dr).not.toContain("hanging-knee-raise");
+    expect(dr).not.toContain("mountain-climber");
+  });
+
+  it("gives every diastasis recti exercise the list of moves to avoid", () => {
+    for (const e of EXERCISES.filter((x) => x.category === "diastasis")) {
+      expect(e.avoid?.en.length).toBeGreaterThan(0);
+      expect(e.avoid?.id.length).toBe(e.avoid?.en.length);
+    }
   });
 });
 
