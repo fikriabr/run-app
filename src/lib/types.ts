@@ -45,6 +45,8 @@ export interface Workout {
   steps: WorkoutStep[];
   status: WorkoutStatus;
   activityId?: string;
+  /** Planned distance in metres before the week was recalculated; unset while the run is as generated. */
+  plannedDistance?: number;
 }
 
 export type Phase = "base" | "build" | "peak" | "taper" | "maintain";
@@ -105,6 +107,8 @@ export interface Activity {
   note?: string;
   /** Number of GPS points stored separately under the route key. */
   pointCount: number;
+  /** Logged by hand (no GPS recording), e.g. a run tracked with another app. */
+  manual?: boolean;
   stepResults?: StepResult[];
   bestEfforts?: Partial<Record<EffortKey, number>>;
 }

@@ -95,7 +95,7 @@ export function RunDetailScreen() {
         <Stat label={t.run.distance} value={f.distance(activity.distance)} unit={f.unit} size={36} />
         <Stat label={t.run.time} value={formatDuration(activity.duration)} size={36} />
         <Stat label={t.run.avgPace} value={f.pace(averagePace(activity.distance, activity.duration * 1000))} unit={f.perUnit} size={36} />
-        <Stat label={t.activity.elevation} value={String(activity.elevationGain)} unit="m" size={36} />
+        {activity.manual ? null : <Stat label={t.activity.elevation} value={String(activity.elevationGain)} unit="m" size={36} />}
         {activity.rpe != null ? <Stat label={t.activity.effort} value={`${activity.rpe}/10`} size={36} /> : null}
       </View>
 
@@ -103,7 +103,7 @@ export function RunDetailScreen() {
         <RouteMap points={points} height={240} accessibilityLabel={t.run.map} />
       ) : (
         <Txt variant="caption" muted>
-          {t.activity.noRoute}
+          {activity.manual ? t.activity.manual : t.activity.noRoute}
         </Txt>
       )}
 

@@ -37,6 +37,7 @@ export function WorkoutDetailScreen() {
   const weekStart = mondayOf(workout.date);
   const canMove = workout.status === "planned" && workout.type !== "race";
   const canStart = workout.status === "planned" && workout.date >= addDays(today, -1) && workout.date <= addDays(today, 1);
+  const canLog = workout.status !== "completed" && workout.date <= today;
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={{ ...screenContent, gap: space.xl }}>
@@ -54,6 +55,19 @@ export function WorkoutDetailScreen() {
 
       {canStart ? (
         <Button label={t.workoutDetail.start} icon="play" onPress={() => router.push({ pathname: "/run", params: { workoutId: workout.id } })} />
+      ) : null}
+      {canLog ? (
+        <View style={{ gap: space.s }}>
+          <Button
+            label={t.workoutDetail.markDone}
+            kind={canStart ? "secondary" : "primary"}
+            icon="check"
+            onPress={() => router.push({ pathname: "/run-log", params: { workoutId: workout.id } })}
+          />
+          <Txt variant="caption" muted>
+            {t.workoutDetail.markDoneHint}
+          </Txt>
+        </View>
       ) : null}
       {workout.status === "completed" && workout.activityId ? (
         <Button label={t.workoutDetail.viewRun} kind="secondary" onPress={() => router.push({ pathname: "/runs/[id]", params: { id: workout.activityId! } })} />

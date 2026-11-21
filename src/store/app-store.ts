@@ -2,10 +2,11 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { applyAdjustment, assessWorkout, moveWorkout } from "@/lib/adapt";
 import { generatePlan } from "@/lib/plan-generator";
+import { type Rebalance, rebalanceWeek } from "@/lib/rebalance";
 import { scheduleStrength } from "@/lib/strength-schedule";
 import type { Activity, FitnessChange, Language, Plan, PlanInput, RoutePoint, ThemePreference, Units, WorkoutStatus } from "@/lib/types";
 import { clampVdot } from "@/lib/vdot";
-import type { StrengthSlot } from "@/lib/training-types";
+import type { StrengthSlot, VideoModel } from "@/lib/training-types";
 import { clearAllStorage, deleteRoute, persistStorage, saveRoute } from "./storage";
 
 export interface Settings {
@@ -17,6 +18,8 @@ export interface Settings {
   paceCues: boolean;
   /** Exercise demo videos start muted and loop; undefined in older saves means on. */
   autoplayVideo?: boolean;
+  /** Who demonstrates exercise videos; undefined in older saves means male. */
+  videoModel?: VideoModel;
 }
 
 export type SavedActivity = Activity & { fitnessChange?: Pick<FitnessChange, "from" | "to" | "reason"> };
@@ -39,6 +42,8 @@ interface AppState {
   hideMissedPrompt: (until: string) => void;
   saveActivity: (activity: Activity, points: RoutePoint[], rpe: number | null, note: string) => SavedActivity;
   deleteActivity: (id: string) => void;
+  /** Resizes the easy and long runs left in a week toward its target; returns what changed. */
+  rebalanceWeek: (weekIndex: number, today: string) => Rebalance | null;
   resetAll: () => void;
 }
 
@@ -50,6 +55,7 @@ const DEFAULT_SETTINGS: Settings = {
   splitCues: true,
   paceCues: true,
   autoplayVideo: true,
+  videoModel: "male",
 };
 
 function newId(prefix: string): string {
@@ -167,6 +173,14 @@ export const useAppStore = create<AppState>()(
               }
             : s.plan,
         }));
+      },
+
+      rebalanceWeek: (weekIndex, today) => {
+        const { plan, activities, vdot } = get();
+        if (!plan) return null;
+        const result = rebalanceWeek(plan, weekIndex, activities, vdot ?? plan.input.vdot, today);
+        if (result && result.changes.length > 0) set({ plan: result.plan });
+        return result;
       },
 
       resetAll: () => {

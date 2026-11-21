@@ -68,6 +68,7 @@ export default function RootLayout() {
           <Stack.Screen name="workouts/[id]" options={{ title: "" }} />
           <Stack.Screen name="run" options={{ presentation: "fullScreenModal", headerShown: false, gestureEnabled: false }} />
           <Stack.Screen name="run-save" options={{ presentation: "fullScreenModal", title: t.save.title, gestureEnabled: false, headerBackVisible: false }} />
+          <Stack.Screen name="run-log" options={{ presentation: "modal", title: t.log.title }} />
           <Stack.Screen name="plan-setup" options={{ presentation: "modal", title: t.onboarding.title }} />
           <Stack.Screen
             name="fitness"

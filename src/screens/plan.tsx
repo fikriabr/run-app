@@ -17,6 +17,7 @@ import { GOAL_DISTANCE, predictRaceTime } from "@/lib/vdot";
 import { workoutDistance, workoutDuration } from "@/lib/workouts";
 import { useAppStore } from "@/store/app-store";
 import { radius, space, useTheme, screenContent } from "@/theme";
+import { RebalanceButton } from "./rebalance-card";
 import { EffortMark } from "./workout-card";
 
 export function PlanScreen() {
@@ -71,6 +72,7 @@ export function PlanScreen() {
         <PhaseBar weeks={plan.weeks} current={currentWeek.index} />
         <Button label={t.plan.adjust} kind="secondary" onPress={() => router.push("/plan-setup")} />
       </View>
+      <RebalanceButton weekIndex={currentWeek.index} />
       {pastCount > 0 ? (
         <Button
           label={showPast ? t.plan.hidePast : t.plan.showPast(pastCount)}

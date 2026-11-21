@@ -55,7 +55,21 @@ export function WorkoutCard({ workout, vdot, goal, showStart }: { workout: Worko
 
       <View style={{ gap: space.s }}>
         {showStart && !done ? (
-          <Button label={t.today.start} icon="play" onPress={() => router.push({ pathname: "/run", params: { workoutId: workout.id } })} />
+          <View style={{ flexDirection: "row", gap: space.s, flexWrap: "wrap" }}>
+            <Button
+              label={t.today.start}
+              icon="play"
+              onPress={() => router.push({ pathname: "/run", params: { workoutId: workout.id } })}
+              style={{ flexGrow: 1 }}
+            />
+            <Button
+              label={t.workoutDetail.markDone}
+              kind="secondary"
+              icon="check"
+              onPress={() => router.push({ pathname: "/run-log", params: { workoutId: workout.id } })}
+              style={{ flexGrow: 1 }}
+            />
+          </View>
         ) : null}
         <Button
           label={done && workout.activityId ? t.workoutDetail.viewRun : t.workoutDetail.structure}
