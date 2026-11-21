@@ -7,6 +7,7 @@ import { Section, SectionTitle } from "@/components/section";
 import { Txt } from "@/components/text";
 import { useT } from "@/i18n";
 import { type Settings, useAppStore } from "@/store/app-store";
+import { useNutritionStore } from "@/store/nutrition-store";
 import { useTrainingStore } from "@/store/training-store";
 import { confirm } from "@/services/confirm";
 import { space, useTheme, screenContent } from "@/theme";
@@ -55,6 +56,7 @@ export function SettingsScreen() {
     if (!(await confirm(t.settings.resetTitle, t.settings.resetBody, t.common.delete, t.common.cancel, true))) return;
     resetAll();
     useTrainingStore.getState().reset();
+    useNutritionStore.getState().reset();
     router.dismissAll();
   };
 

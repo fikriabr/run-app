@@ -44,6 +44,10 @@ const ICONS = {
   timer: ["timer", "timer"],
   edit: ["pencil", "edit"],
   copy: ["doc.on.doc", "content_copy"],
+  food: ["fork.knife", "restaurant"],
+  scale: ["scalemass", "monitor_weight"],
+  swap: ["arrow.triangle.2.circlepath", "sync"],
+  circle: ["circle", "radio_button_unchecked"],
 } satisfies Record<string, [SF, MD]>;
 
 export type IconName = keyof typeof ICONS;

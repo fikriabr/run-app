@@ -24,6 +24,8 @@ import { clearLastCrash, readLastCrash } from "@/services/crash-log";
 import { Share } from "react-native";
 import { findRoutine, useTrainingStore } from "@/store/training-store";
 import { fonts, radius, screenContent, space, useResolvedScheme, useTheme } from "@/theme";
+import { useNutritionStore } from "@/store/nutrition-store";
+import { TodayFoodCard } from "./nutrition";
 import { useStartRoutine } from "./training-shared";
 import { EffortMark, WorkoutCard } from "./workout-card";
 
@@ -46,6 +48,7 @@ export function TodayScreen() {
   const pendingRun = useRunStore((s) => (s.restored ? s.run : null));
   const pendingWorkoutId = useRunStore((s) => s.workoutId);
   const [lastCrash, setLastCrash] = useState(() => readLastCrash());
+  const hasDiet = useNutritionStore((s) => s.profile != null);
 
   // The navy hero needs light status-bar content while this tab is showing.
   useFocusEffect(
@@ -55,29 +58,29 @@ export function TodayScreen() {
     }, [scheme]),
   );
 
-  if (!plan) return null;
-  const goal = plan.input.goal;
-  const todays = plan.workouts.filter((w) => w.date === today);
+  const goal = plan?.input.goal ?? "fitness";
+  const workouts = plan?.workouts ?? [];
+  const todays = workouts.filter((w) => w.date === today);
   const focus = todays.find((w) => w.status === "planned") ?? todays[0];
-  const upcoming = plan.workouts.filter((w) => w.date > today && w.status === "planned");
-  const lastDate = plan.workouts[plan.workouts.length - 1]?.date;
+  const upcoming = workouts.filter((w) => w.date > today && w.status === "planned");
+  const lastDate = workouts[workouts.length - 1]?.date;
   const planDone = lastDate != null && lastDate < today;
-  const notStarted = plan.workouts[0] != null && plan.workouts[0].date > addDays(mondayOf(today), 6);
-  const missed = missedWorkouts(plan, today);
+  const notStarted = workouts[0] != null && workouts[0].date > addDays(mondayOf(today), 6);
+  const missed = plan ? missedWorkouts(plan, today) : [];
   const showMissed = missed.length >= 2 && !(hiddenUntil && hiddenUntil >= today);
 
-  const strengthSlot = plan.strength?.find((x) => x.date === today && x.status !== "skipped");
+  const strengthSlot = plan?.strength?.find((x) => x.date === today && x.status !== "skipped");
   const strengthRoutine = findRoutine(strengthSlot?.routineId, customRoutines);
   const weekStart = mondayOf(today);
   const weekDays = [0, 1, 2, 3, 4, 5, 6].map((d) => addDays(weekStart, d));
-  const weekWorkouts = plan.workouts.filter((w) => w.date >= weekStart && w.date <= weekDays[6]);
-  const weekStrength = (plan.strength ?? []).filter((x) => x.date >= weekStart && x.date <= weekDays[6]);
+  const weekWorkouts = workouts.filter((w) => w.date >= weekStart && w.date <= weekDays[6]);
+  const weekStrength = (plan?.strength ?? []).filter((x) => x.date >= weekStart && x.date <= weekDays[6]);
   const plannedDistance = weekWorkouts.filter((w) => w.status !== "skipped").reduce((sum, w) => sum + workoutDistance(w, vdot, goal), 0);
   const weekStartMs = fromDateKey(weekStart).getTime();
   const doneDistance = activities
     .filter((a) => a.startedAt >= weekStartMs && a.startedAt < weekStartMs + 7 * 86_400_000)
     .reduce((sum, a) => sum + a.distance, 0);
-  const currentWeek = plan.weeks.find((w) => today >= w.start && today <= addDays(w.start, 6));
+  const currentWeek = plan?.weeks.find((w) => today >= w.start && today <= addDays(w.start, 6));
 
   const dayItems: Record<string, DayItem[]> = {};
   for (const w of weekWorkouts) {
@@ -125,7 +128,7 @@ export function TodayScreen() {
                 {f.dayLong(today)}
               </Txt>
               <Txt variant="display" color={theme.onNavy}>
-                {currentWeek ? `${t.common.weekOf(currentWeek.index + 1, plan.weeks.length)}` : t.goalPlan(t.goal[goal])}
+                {plan && currentWeek ? `${t.common.weekOf(currentWeek.index + 1, plan.weeks.length)}` : plan ? t.goalPlan(t.goal[goal]) : t.today.hello}
               </Txt>
               {currentWeek ? (
                 <Txt variant="body" color={theme.navyMuted}>
@@ -139,6 +142,7 @@ export function TodayScreen() {
         <View style={{ marginTop: -56 }}>
           <Stripes navy={theme.navy} accent={theme.accent} />
           <View style={{ ...screenContent, paddingTop: 0, gap: space.l }}>
+            {plan ? (
             <View style={{ backgroundColor: theme.surface, borderRadius: radius.card, borderCurve: "continuous", overflow: "hidden" }}>
               <View style={{ padding: 16, paddingBottom: 8, gap: space.m }}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 4 }}>
@@ -175,6 +179,7 @@ export function TodayScreen() {
                 />
               ) : null}
             </View>
+            ) : null}
 
             {lastCrash ? (
               <Banner icon="missed" tone="attention" title={t.crash.lastTitle} body={t.crash.lastBody}>
@@ -239,7 +244,7 @@ export function TodayScreen() {
               </Banner>
             ) : null}
 
-            {planDone ? (
+            {!plan ? null : planDone ? (
               <Banner icon="check" tone="good" title={t.today.planDone} body={t.today.planDoneHint}>
                 <Button label={t.today.newPlan} onPress={() => router.push("/plan-setup")} />
               </Banner>
@@ -251,7 +256,7 @@ export function TodayScreen() {
                   <Icon name="rest" size={22} color={theme.primary} />
                   <Txt variant="title">{t.today.rest}</Txt>
                 </View>
-                <Txt muted>{notStarted ? t.today.notStarted(f.dayLong(plan.workouts[0].date)) : t.today.restHint}</Txt>
+                <Txt muted>{notStarted ? t.today.notStarted(f.dayLong(workouts[0].date)) : t.today.restHint}</Txt>
                 {upcoming[0] ? (
                   <Button
                     label={`${t.today.nextUp}: ${t.workout[upcoming[0].type]}`}
@@ -307,6 +312,18 @@ export function TodayScreen() {
                       onPress={() => router.push({ pathname: "/workouts/[id]", params: { id: w.id } })}
                     />
                   ))}
+                </Section>
+              </View>
+            ) : null}
+
+            {hasDiet ? <TodayFoodCard date={today} /> : null}
+
+            {!plan || !hasDiet ? (
+              <View style={{ gap: space.m }}>
+                <SectionTitle>{t.today.addMore}</SectionTitle>
+                <Section>
+                  {!plan ? <Row title={t.today.addRun} subtitle={t.welcome.runBody} leading={<Icon name="run" size={20} color={theme.primary} />} onPress={() => router.push("/plan-setup")} /> : null}
+                  {!hasDiet ? <Row title={t.today.addDiet} subtitle={t.welcome.dietBody} leading={<Icon name="food" size={20} color={theme.primary} />} onPress={() => router.push("/nutrition-setup")} /> : null}
                 </Section>
               </View>
             ) : null}

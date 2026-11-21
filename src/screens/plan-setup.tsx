@@ -26,7 +26,7 @@ type Source = "current" | "result" | "level";
 const REFERENCE_MONDAY = "2026-11-09";
 const ZONES: Zone[] = ["easy", "marathon", "threshold", "interval"];
 
-export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
+export function PlanSetup({ mode, onDone }: { mode: "first" | "edit"; onDone?: () => void }) {
   const t = useT();
   const f = useFormat();
   const theme = useTheme();
@@ -97,8 +97,8 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
       },
       startNext ? undefined : today,
     );
-    if (mode === "edit") router.back();
-    else router.replace("/");
+    if (onDone) onDone();
+    else router.back();
   };
 
   return (
@@ -323,7 +323,7 @@ export function PlanSetup({ mode }: { mode: "first" | "edit" }) {
       ) : null}
 
       <View style={{ gap: space.s }}>
-        {mode === "edit" ? (
+        {existing ? (
           <Txt variant="caption" muted style={{ textAlign: "center" }}>
             {t.onboarding.replaceWarning}
           </Txt>

@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { SectionList, View } from "react-native";
+import { EmptyState } from "@/components/banner";
 import { Button } from "@/components/button";
 import { Icon } from "@/components/icon";
 import { Row } from "@/components/section";
@@ -30,7 +31,13 @@ export function PlanScreen() {
   const [showPast, setShowPast] = useState(false);
   const l = useLocalized();
   const customRoutines = useTrainingStore((s) => s.customRoutines);
-  if (!plan) return null;
+  if (!plan) {
+    return (
+      <EmptyState icon="run" title={t.plan.emptyTitle} body={t.plan.emptyBody}>
+        <Button label={t.plan.create} onPress={() => router.push("/plan-setup")} />
+      </EmptyState>
+    );
+  }
 
   const goal = plan.input.goal;
   const currentWeek = plan.weeks.find((w) => today >= w.start && today <= addDays(w.start, 6)) ?? (today < plan.weeks[0].start ? plan.weeks[0] : plan.weeks[plan.weeks.length - 1]);

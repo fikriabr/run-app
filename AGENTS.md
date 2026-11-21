@@ -42,7 +42,7 @@ Docs: https://docs.expo.dev/eas/index.md
 
 ## This project
 
-Langkah is a running-training app: periodised plans, GPS run recording with structured-workout voice coaching, run history and fitness tracking, plus a strength, plyometrics, yoga, diastasis recti and mobility library with set logging.
+Langkah is a running-training app: periodised plans, GPS run recording with structured-workout voice coaching, run history and fitness tracking, plus a strength, plyometrics, yoga, diastasis recti and mobility library with set logging, and a diet section with calorie and protein targets, weight tracking and regional meal plans. A running plan is optional.
 
 - `src/lib/` holds the training logic as plain TypeScript with Vitest tests next to each file (`npm test`). Keep React and Expo imports out of it.
 - `src/screens/` holds screen bodies; `src/app/` only routes.

@@ -26,9 +26,9 @@ export default function TabsLayout() {
         <NativeTabs.Trigger.Icon sf="dumbbell" md="fitness_center" />
         <NativeTabs.Trigger.Label>{t.tabs.train}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="activity">
-        <NativeTabs.Trigger.Icon sf="figure.run" md="directions_run" />
-        <NativeTabs.Trigger.Label>{t.tabs.activity}</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="food">
+        <NativeTabs.Trigger.Icon sf="fork.knife" md="restaurant" />
+        <NativeTabs.Trigger.Label>{t.tabs.food}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="you">
         <NativeTabs.Trigger.Icon sf={{ default: "person.crop.circle", selected: "person.crop.circle.fill" }} md="person" />

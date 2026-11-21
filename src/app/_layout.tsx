@@ -28,7 +28,7 @@ export default function RootLayout() {
   const theme = useTheme();
   const scheme = useResolvedScheme();
   const themePref = useAppStore((s) => s.settings.theme);
-  const hasPlan = useAppStore((s) => s.plan != null);
+  const onboarded = useAppStore((s) => s.onboarded);
   const stackOptions = useStackOptions();
   const ready = fontsLoaded || fontError != null;
 
@@ -63,13 +63,16 @@ export default function RootLayout() {
     <ThemeProvider value={navTheme}>
       <StatusBar style={scheme === "dark" ? "light" : "dark"} />
       <Stack screenOptions={stackOptions}>
-        <Stack.Protected guard={hasPlan}>
+        <Stack.Protected guard={onboarded}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="workouts/[id]" options={{ title: "" }} />
           <Stack.Screen name="run" options={{ presentation: "fullScreenModal", headerShown: false, gestureEnabled: false }} />
           <Stack.Screen name="run-save" options={{ presentation: "fullScreenModal", title: t.save.title, gestureEnabled: false, headerBackVisible: false }} />
           <Stack.Screen name="run-log" options={{ presentation: "modal", title: t.log.title }} />
           <Stack.Screen name="plan-setup" options={{ presentation: "modal", title: t.onboarding.title }} />
+          <Stack.Screen name="nutrition-setup" options={{ presentation: "modal", title: t.nutrition.setupTitle }} />
+          <Stack.Screen name="recipes/index" options={{ title: t.nutrition.recipesTitle }} />
+          <Stack.Screen name="recipes/[id]" options={{ title: "" }} />
           <Stack.Screen
             name="fitness"
             options={{ presentation: "formSheet", sheetGrabberVisible: true, sheetAllowedDetents: [0.8, 1], title: t.fitness.title }}
@@ -88,8 +91,8 @@ export default function RootLayout() {
             options={{ presentation: "formSheet", sheetGrabberVisible: true, sheetAllowedDetents: [0.6, 0.9], title: t.quickStart.title }}
           />
         </Stack.Protected>
-        <Stack.Protected guard={!hasPlan}>
-          <Stack.Screen name="onboarding" options={{ title: t.onboarding.title, headerLargeTitleEnabled: true }} />
+        <Stack.Protected guard={!onboarded}>
+          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
         </Stack.Protected>
       </Stack>
     </ThemeProvider>

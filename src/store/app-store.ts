@@ -32,8 +32,11 @@ interface AppState {
   activities: SavedActivity[];
   /** Date (YYYY-MM-DD) until which the missed-runs prompt stays hidden. */
   missedPromptHiddenUntil: string | null;
+  /** The welcome choices are done; a running plan is optional. */
+  onboarded: boolean;
 
   updateSettings: (patch: Partial<Settings>) => void;
+  finishOnboarding: () => void;
   createPlan: (input: PlanInput, skipBefore?: string) => void;
   setWorkoutStatus: (workoutId: string, status: WorkoutStatus) => void;
   moveWorkout: (workoutId: string, date: string) => void;
@@ -71,6 +74,9 @@ export const useAppStore = create<AppState>()(
       plan: null,
       activities: [],
       missedPromptHiddenUntil: null,
+      onboarded: false,
+
+      finishOnboarding: () => set({ onboarded: true }),
 
       updateSettings: (patch) => set((s) => ({ settings: { ...s.settings, ...patch } })),
 
@@ -192,13 +198,20 @@ export const useAppStore = create<AppState>()(
           plan: null,
           activities: [],
           missedPromptHiddenUntil: null,
+          onboarded: false,
         });
       },
     }),
     {
       name: "langkah-store",
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => persistStorage),
+      // Version 1 had no welcome step: anyone with a plan had already finished setup.
+      migrate: (persisted, version) => {
+        const state = persisted as Partial<AppState>;
+        if (version < 2) return { ...state, onboarded: state.plan != null };
+        return state;
+      },
       partialize: (s) => ({
         settings: s.settings,
         vdot: s.vdot,
@@ -206,6 +219,7 @@ export const useAppStore = create<AppState>()(
         plan: s.plan,
         activities: s.activities,
         missedPromptHiddenUntil: s.missedPromptHiddenUntil,
+        onboarded: s.onboarded,
       }),
     },
   ),

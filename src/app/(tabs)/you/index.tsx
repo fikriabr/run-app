@@ -1,3 +1,3 @@
-import { YouScreen } from "@/screens/you";
+import { YouTabScreen } from "@/screens/you-tab";
 
-export default YouScreen;
+export default YouTabScreen;
