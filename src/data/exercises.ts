@@ -1,5 +1,7 @@
 import type { Exercise } from "@/lib/training-types";
 import { EXERCISE_VIDEOS } from "./exercise-videos";
+import { BAND_EXERCISES } from "./exercises-band";
+import { BODYWEIGHT_EXERCISES } from "./exercises-bodyweight";
 import { DR_AVOID, DR_CAUTION, MORE_EXERCISES } from "./exercises-more";
 
 // Demo videos live in exercise-videos.ts, one per model (male and female) where both were found.
@@ -790,7 +792,7 @@ const CORE_EXERCISES: Exercise[] = [
   },
 ];
 
-export const EXERCISES: Exercise[] = [...CORE_EXERCISES, ...MORE_EXERCISES].map((e) => ({
+export const EXERCISES: Exercise[] = [...CORE_EXERCISES, ...MORE_EXERCISES, ...BAND_EXERCISES, ...BODYWEIGHT_EXERCISES].map((e) => ({
   ...e,
   videos: EXERCISE_VIDEOS[e.id],
   avoid: e.category === "diastasis" ? DR_AVOID : e.avoid,

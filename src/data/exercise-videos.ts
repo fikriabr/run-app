@@ -375,4 +375,295 @@ export const EXERCISE_VIDEOS: Record<string, ExerciseVideos> = {
   "dr-side-lying-leg-lift": {
     female: { id: "pNismoYr1Fg", title: "Pelvic health education Side lying leg lift" },
   },
+  "band-squat": {
+    male: { id: "Eaqr79zvqIw", title: "How To: Resistance Band Squat" },
+    female: { id: "duP-UZsfOaQ", title: "How To Do Resistance Band Squat" },
+  },
+  "band-split-squat": {
+    male: { id: "cdIq_H4eJ0Q", title: "How To: Resistance Band Split Squat" },
+    female: { id: "V9Mv4KBa1gQ", title: "Bulgarian Split Squat With Resistance Band (or Booty Band) / Bulgarian Split Squat For Glutes" },
+  },
+  "band-reverse-lunge": {
+    male: { id: "_zNae2wVXzA", title: "Body Coach's Corner: Resistance Band Reverse Lunge | TB12" },
+    female: { id: "de7SdtMdSF8", title: "Performing a Reverse Lunge using a Resistance Band" },
+  },
+  "band-lateral-lunge": {
+    male: { id: "Hxkr1DxVPMk", title: "Banded Lateral Lunge" },
+    female: { id: "sFcTL3ZfnFI", title: "Exercise bands - How to do Side Lunges -  URBNFit" },
+  },
+  "band-deadlift": {
+    male: { id: "obM6SBVa-MU", title: "How to do a Deadlift with resistance bands | YuryFit" },
+  },
+  "band-single-leg-rdl": {
+    male: { id: "gADuD4dM1n0", title: "Banded Single-Leg RDL" },
+    female: { id: "gFwg_Ug0zF0", title: "Single leg deadlift | Resistance band" },
+  },
+  "band-glute-bridge": {
+    male: { id: "GjLPEfu5PN0", title: "Basic Banded Glute Bridge" },
+    female: { id: "GaxOodE1Irk", title: "Glute Bridge with Knees Banded - OPEX Exercise Library" },
+  },
+  "band-hip-thrust": {
+    male: { id: "2OaqZ-QAiYw", title: "Hip Thrust with Resistance Band" },
+    female: { id: "HZ0vjMAmpfI", title: "Hip Thrusts With Resistance Band / Hip Thrusts With External Rotation" },
+  },
+  "band-pull-through": {
+    male: { id: "Hro0lCFQTxo", title: "Banded Pull-Through" },
+    female: { id: "NO-NevrDrjE", title: "Banded Pull Through | Movement Demo" },
+  },
+  "band-monster-walk": {
+    male: { id: "eohzEdSHWqo", title: "Monster Walks | Glute Med Strengthening Exercise" },
+    female: { id: "O_GEUdxQETA", title: "Monster Walks - Strengthening the gluteus medius" },
+  },
+  "band-seated-abduction": {
+    male: { id: "DU6W5rVb7zA", title: "How To Do A SEATED BANDED HIP ABDUCTION | Exercise Demonstration Video and Guide" },
+    female: { id: "FvuCVHD6Ing", title: "Band Abduction" },
+  },
+  "band-fire-hydrant": {
+    male: { id: "Gn7b4qVxFYA", title: "How To Do The BANDED FIRE HYDRANT EXERCISE | Exercise Demonstration Video and Guide" },
+    female: { id: "HsutIUujRo4", title: "Mini Band Fire Hydrant Form | Build Gluteus Medius Strength" },
+  },
+  "band-hamstring-curl": {
+    male: { id: "LtTcXXgeRYo", title: "Band Prone Hamstring Curl" },
+    female: { id: "EktBtOMTUEw", title: "How to do lying leg curls at home" },
+  },
+  "band-standing-march": {
+    male: { id: "U7KaLsN3uE8", title: "Standing Hip Flexion With Band" },
+  },
+  "band-calf-raise": {
+    male: { id: "BcB7Y5CMDG0", title: "How to: Resistance Band Calf Raise" },
+    female: { id: "a2xjbhP4MkY", title: "Calf Raise with Resistance Band" },
+  },
+  "band-ankle-strength": {
+    female: { id: "xfrncpP5ONQ", title: "Ankle Eversion with Resistive Band - Ask Doctor Jo" },
+  },
+  "band-chest-press": {
+    male: { id: "6-86jEAXA08", title: "How To: Standing Resistance Band Chest Press" },
+    female: { id: "5NZvqck36Mg", title: "Band Chest Press" },
+  },
+  "band-push-up": {
+    male: { id: "Hzhyjhq9tQo", title: "How To Do Resistance Band Push Ups | Exercise Demonstration Video and Guide" },
+    female: { id: "RWFCLyyyqV8", title: "Using a Hip Resistance Band for a Push-up" },
+  },
+  "band-shoulder-press": {
+    male: { id: "0rLjkQweIDg", title: "Resistance Band Shoulder Press" },
+  },
+  "band-lateral-raise": {
+    male: { id: "gfEyrmxbCbw", title: "How To: Resistance Band Lateral Raise" },
+    female: { id: "fM-nH-Q9y4M", title: "Resistance Band Lateral Raise: Female Over 40 Dumbbell Exercises" },
+  },
+  "band-biceps-curl": {
+    male: { id: "AaA7Yj3zHiU", title: "How to do Bicep curls with resistance bands | YuryFit" },
+    female: { id: "eDS2Beaqq3c", title: "Band Biceps Curl" },
+  },
+  "band-triceps-extension": {
+    male: { id: "8-q04odgg4M", title: "Resistance Band Overhead Tricep Extension" },
+    female: { id: "OWV6s4FtwME", title: "How to do a Resistance Band Tricep Extension for Arm Strength" },
+  },
+  "band-lat-pulldown": {
+    male: { id: "_97pmOC2tzE", title: "How To Do Lat Pull Down With Resistance Band | Back Workout | Fitness My Life" },
+    female: { id: "2K6U6ScTdUI", title: "How To Do Resistance Band Lat Pull Down" },
+  },
+  "band-bent-over-row": {
+    male: { id: "vR9KcvzLqVo", title: "Resistance Band Exercise: Bent Over Rows" },
+    female: { id: "W_3fWzfjQNw", title: "How to do Bent Over Rows at Home using a Resistance Band" },
+  },
+  "band-external-rotation": {
+    male: { id: "HKF9mb6FQDg", title: "Rotator Cuff Strengthening" },
+    female: { id: "4fM554Org3o", title: "Shoulder External Rotation with Resistance Band" },
+  },
+  "band-woodchop": {
+    male: { id: "Yp2DmHk3KnY", title: "How to do a Wood Chopper with resistance bands | YuryFit" },
+    female: { id: "02q1lTCrLoc", title: "Banded Woodchop" },
+  },
+  "band-dead-bug": {
+    male: { id: "6oiD9Yv0CMQ", title: "Dead Bugs (Banded) - Tutorial" },
+    female: { id: "97nWGRo_Jqk", title: "How to Perform the Banded Deadbug Exercise" },
+  },
+  "band-pass-through": {
+    male: { id: "Annb0cpxwzM", title: "Shoulder Dislocate Stretch with Resistance Band" },
+    female: { id: "nikVq2pMVg4", title: "Shoulder Dislocatations / Passthroughs with a Resistance Band! An exercise you dont want to miss." },
+  },
+  "wall-sit": {
+    male: { id: "y-wV4Venusw", title: "How To: Wall-Sit" },
+    female: { id: "JaZNYM3zAP0", title: "How To Do a Wall Sit | The Right Way | Well+Good" },
+  },
+  "curtsy-lunge": {
+    male: { id: "1MgFup8A_0c", title: "How To Do Curtsy Lunges The RIGHT Way" },
+    female: { id: "yv0gSJLFhJE", title: "Curtsy Lunge. Proper form and technique tutorial." },
+  },
+  "sumo-squat": {
+    male: { id: "vBA3vyOxJv0", title: "Dumbbell Sumo Squat" },
+    female: { id: "pcY33kEoKZ4", title: "Single Dumbbell Sumo Squat | Proper Technique + Form Tips" },
+  },
+  "nordic-curl": {
+    male: { id: "kjv4WQXWl_A", title: "Nordic Hamstring Curl" },
+  },
+  "superman": {
+    male: { id: "cZxtPxeR2H8", title: "Superman Exercise For The Back — (LOW BACK AND CORE EXERCISES)" },
+    female: { id: "ATly_pW0i6g", title: "How to do a Superman | The Right Way | Well+Good" },
+  },
+  "bear-crawl": {
+    male: { id: "Ee1BQNI6zN4", title: "Bear Crawl" },
+    female: { id: "t8XLor7unqU", title: "Bear Crawl" },
+  },
+  "hollow-hold": {
+    male: { id: "BQCdzRPE9Ao", title: "Hollow Body Holds" },
+    female: { id: "TNHSgs_orU0", title: "How to do a Hollow Hold | The Right Way | Well+Good" },
+  },
+  "inchworm": {
+    male: { id: "XFnK5X8hKB0", title: "How To: Inchworm Exercise" },
+    female: { id: "ZY2ji_Ho0dA", title: "How to Do：INCHWORMS" },
+  },
+  "jumping-jack": {
+    male: { id: "wqlQZk10dWE", title: "Jumping Jacks (CORRECT FORM): myFit Personal Training" },
+    female: { id: "iSSAk4XCsRA", title: "Jumping Jacks - XFit Daily" },
+  },
+  "box-pistol-squat": {
+    male: { id: "DuE_ScvXwtg", title: "How To: Single-Leg Box Squat" },
+    female: { id: "RR1SL6sukc8", title: "Single Leg Box Squats (Tutorial + Tips) | Team Evolve" },
+  },
+  "band-press-out": {
+    male: { id: "gEJBlMjhYCU", title: "Standing Anti Rotation Press" },
+    female: { id: "TTSOBYgV1SE", title: "How to Do a Standing Anti-Rotation Press with Anchored Resistance | MedBridge" },
+  },
+  "band-upright-row": {
+    male: { id: "bfzl23IIOi8", title: "How To: Resistance Band Upright-Row" },
+    female: { id: "g7lsAn44TQk", title: "Bent Over Row to Upright Row with Resistance Band" },
+  },
+  "dr-ball-squeeze": {
+    female: { id: "kljQ5V9v6rQ", title: "Ball Squeeze w. Pelvic Floor Contraction" },
+  },
+  "dr-sit-to-stand": {
+    female: { id: "nWGkYjaV0kM", title: "Postpartum exercise: Stand-to-sit with chair" },
+  },
+  "dr-pallof": {
+    female: { id: "8oJcghhzpek", title: "Pallof Press Progression 1-Postpartum Rehab" },
+  },
+  "dr-incline-plank": {
+    female: { id: "85j7ITfQvh4", title: "Diastasis recti exercises - Wall plank - Core Fitness for Moms" },
+  },
+  "dr-knee-hover": {
+    female: { id: "PyVaYaCSR6M", title: "Quadruped knee hover" },
+  },
+  "dr-seated-march": {
+    female: { id: "KoWXTD4Yf9o", title: "Tighten Your Tummy Sitting Down! | 5 MIN Deep Core and Pelvic Floor Chair Workout" },
+  },
+  "dr-bridge-march": {
+    female: { id: "qv2pAeVQQw0", title: "Glute Bridge Marching | Core Exercise & Glute Activation Tutorial" },
+  },
+  "prisoner-squat": {
+    male: { id: "H0fJ0Ay4U-k", title: "How To Do A PRISONER SQUAT | Exercise Demonstration Video and Guide" },
+    female: { id: "AeJ0WolqKkQ", title: "How to do Prisoner Squat | Joanna Soh" },
+  },
+  "pulse-squat": {
+    male: { id: "XQB2ovKt-8E", title: "Pulse Squats" },
+    female: { id: "N4fzbBv4BFI", title: "How to do Squat Pulse | Joanna Soh" },
+  },
+  "cossack-squat": {
+    male: { id: "nLNqEQ4B6XI", title: "Cossack Squat | Hip Mobilization Exercise" },
+    female: { id: "fjx7M_m50Y8", title: "How to Do a Cossack Squat | Improve Hip Mobility & Leg Strength" },
+  },
+  "squat-calf-raise": {
+    male: { id: "rNMj8dQfiYs", title: "SQUAT CALF RAISE" },
+    female: { id: "1W0DlNuJbsc", title: "Squat to Calf Raise Tutorial - Proper Form and Technique" },
+  },
+  "split-squat": {
+    male: { id: "m8mQ_92_Ylg", title: "Fix your form: split squats" },
+    female: { id: "vvZHaPGOIWU", title: "Body Weight Split Squat" },
+  },
+  "knee-push-up": {
+    male: { id: "RWS6Q4IPO-8", title: "Knee Push Up Exercise" },
+    female: { id: "jWxvty2KROs", title: "How to Do：KNEE PUSH-UPS" },
+  },
+  "incline-push-up": {
+    male: { id: "Me9bHFAxnCs", title: "How to do an Incline Pushup | Tiger Fitness" },
+    female: { id: "0CcVzNxrcdc", title: "Incline Pushups" },
+  },
+  "decline-push-up": {
+    male: { id: "SKPab2YC8BE", title: "How To: Decline Push-Up" },
+    female: { id: "PXIpw1JD4qw", title: "Decline Pushups" },
+  },
+  "diamond-push-up": {
+    male: { id: "J0DnG1_S92I", title: "How To: Diamond Push-Up" },
+    female: { id: "l02EZAm-qn0", title: "Diamond Pushups Explained (Most People Do These Wrong)" },
+  },
+  "wide-push-up": {
+    male: { id: "EsIdzx1J0iA", title: "Wide Pushup tutorial, Benefits and Muscle worked" },
+    female: { id: "m3FTgWtJsFE", title: "How To Wide-Hands Pushup | Nuffield Health" },
+  },
+  "pike-push-up": {
+    male: { id: "226O2XfevJ0", title: "How To Do Pike Push Ups" },
+    female: { id: "Q2koXI9jphI", title: "How to Do：PIKE PUSH UPS" },
+  },
+  "archer-push-up": {
+    male: { id: "OVRBYrjszy4", title: "How To Do Archer Push Ups" },
+  },
+  "scapular-pull-up": {
+    male: { id: "VpeeqGkiDUU", title: "Scapula Pull Ups" },
+    female: { id: "kCoCVLZvI8E", title: "Scap Pull ups" },
+  },
+  "band-assisted-pull-up": {
+    male: { id: "KqS6SFZCrjY", title: "How To Do A RESISTANCE BAND ASSISTED PULL UP | Exercise Demonstration Video and Guide" },
+    female: { id: "5rR_bzBc1NA", title: "Band Assisted Pull up" },
+  },
+  "flexed-arm-hang": {
+    male: { id: "TmnY5wwqLI0", title: "Flexed-Arm Hang" },
+    female: { id: "QXVQfPFmbSI", title: "Flexed-Arm Hang" },
+  },
+  "wide-pull-up": {
+    male: { id: "LnyeO61PVBM", title: "How To Do Wide Grip Pull ups - Benefits, Muscles Worked" },
+    female: { id: "HlhJESGjVZE", title: "Wide Grip Assisted Pull Ups (Tutorial + Tips) | Team Evolve" },
+  },
+  "hanging-leg-raise": {
+    male: { id: "Pr1ieGZ5atk", title: "Hanging Leg Raise | HOW-TO" },
+    female: { id: "ttdkm6ESUjI", title: "Hanging Leg Raises | Straight Leg Raises and Hanging Core" },
+  },
+  "inverted-row": {
+    male: { id: "KOaCM1HMwU0", title: "Inverted Row" },
+    female: { id: "6uN0OU4AlHI", title: "Inverted Rows at Home - Challenging Bodyweight Exercise to work your back!" },
+  },
+  "single-leg-calf-raise": {
+    male: { id: "qPd73snQfUs", title: "Single-Leg Calf Raise (HSS)" },
+    female: { id: "Ovzq9hlKOSk", title: "Calf raises one leg step" },
+  },
+  "step-down": {
+    male: { id: "Or4C-UQ63Xc", title: "Single Leg Step Down | Eccentric Knee Strengthening Exercise" },
+    female: { id: "tOplbmmW2Rg", title: "Exercise for Runners and Walkers: Step Downs" },
+  },
+  "lateral-step-up": {
+    male: { id: "s3GtaoTuQXU", title: "How To Do A LATERAL STEP UP | Exercise Demonstration Video and Guide" },
+    female: { id: "tiwUIT-1PqA", title: "How to do a Side Step Up" },
+  },
+  "skater-squat": {
+    male: { id: "cwgFnwaHeTw", title: "How to Do a Skater Squat (Proper Form)" },
+    female: { id: "5NE-ZqDri04", title: "Skater Squats" },
+  },
+  "tibialis-raise": {
+    male: { id: "OPEuhclsTUQ", title: "Tibialis Raise" },
+    female: { id: "_G1xGi1lSs0", title: "Banded Tibialis Raises" },
+  },
+  "hamstring-walkout": {
+    male: { id: "PtAEesSYE1A", title: "Bridge Walk Outs | Chris Johnson PT" },
+    female: { id: "0DbMzDAQFOU", title: "Hamstring Walk Outs | Proper Technique + Form Tips" },
+  },
+  "db-front-squat": {
+    male: { id: "YF3FAHS2j1M", title: "Dumbbell Front Squat (2 DB's): Proper Form" },
+    female: { id: "Q8M8JRHpxyo", title: "Dumbbell Front Squat Exercise Tutorial | Dumbbell Squat" },
+  },
+  "db-split-squat": {
+    male: { id: "yAsy-VHC9VM", title: "How To: Dumbbell Split Squat" },
+    female: { id: "XEUEae_rnn0", title: "Dumbbell Split Squat" },
+  },
+  "kb-deadlift": {
+    male: { id: "l6gDwf3xC6s", title: "Kettlebell Deadlift | Exercise Tutorial" },
+    female: { id: "hinonqqzatk", title: "How To Do a Kettlebell Deadlift | The Right Way | Well+Good" },
+  },
+  "db-sumo-deadlift": {
+    male: { id: "6P_8ul6xBmc", title: "How To: Dumbbell Sumo Deadlift" },
+    female: { id: "GavYxz6FOUw", title: "Dumbbell Sumo Deadlift Exercise Tutorial | Dumbbell Deadlift" },
+  },
+  "barbell-reverse-lunge": {
+    male: { id: "U5Q5HfUyy78", title: "Barbell Reverse Lunges – Stop Cheating With Your Back Leg" },
+    female: { id: "sb1GbA4Dp04", title: "Barbell Reverse Lunge Tutorial - Proper Form and Technique" },
+  },
 };
